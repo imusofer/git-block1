@@ -21,6 +21,10 @@
 - .gitignore behavior
 - forced add of an ignored file to make Git track it
 - git tag
+- git diff
+- git diff --staged
+- git branch
+- git switch
 
 ## Manual Validation
 - Checked repo state with git status
@@ -28,6 +32,7 @@
 - Verified ignore behavior with .gitignore
 - Verified tracked vs ignored behavior with keep.log
 - Verified added tag to a commit
+- Verify changes made before and after staging
 
 ## Next Automation Step
 - Add a basic CI workflow later
