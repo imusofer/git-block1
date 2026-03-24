@@ -20,12 +20,14 @@
 - git log
 - .gitignore behavior
 - forced add of an ignored file to make Git track it
+- git tag
 
 ## Manual Validation
 - Checked repo state with git status
 - Checked commit history with git log
 - Verified ignore behavior with .gitignore
 - Verified tracked vs ignored behavior with keep.log
+- Verified added tag to a commit
 
 ## Next Automation Step
 - Add a basic CI workflow later
