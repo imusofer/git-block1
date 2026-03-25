@@ -1,0 +1,21 @@
+name: Repo Check
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  repo-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Show current directory
+        run: pwd
+
+      - name: List repository files
+        run: ls -la
+
+      - name: Print README
+        run: cat README.md
