@@ -11,6 +11,7 @@
 - .gitignore
 - README.md
 - keep.log
+- repo-check.yml
 
 ## What I Practiced
 - git init
@@ -33,6 +34,7 @@
 - Verified tracked vs ignored behavior with keep.log
 - Verified added tag to a commit
 - Verify changes made before and after staging
+- Verify current directory, repo files and README.md contents
 
 ## Next Automation Step
 - Add a basic CI workflow later
