@@ -4,6 +4,7 @@
 - Practice core Git fundamentals
 - Understand file states and commit flow
 - Build cleaner repo habits
+- Understand CI/CD practices by creating a GitHub Actions workflow
 
 ## Contents
 - notes.txt
@@ -35,6 +36,7 @@
 - Verified added tag to a commit
 - Verify changes made before and after staging
 - Verify current directory, repo files and README.md contents
+- Verify README.md exists through workflow
 
 ## Next Automation Step
 - Add a basic CI workflow later

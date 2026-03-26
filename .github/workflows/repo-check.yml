@@ -19,3 +19,6 @@ jobs:
 
       - name: Print README
         run: cat README.md
+
+      - name: Check if README exists
+        run: ls README.md
