@@ -20,12 +20,6 @@ jobs:
       - name: Print README
         run: cat README.md
 
-      - name: Check if README exists
-        run: ls README.md
-
-      - name: Check if .gitignore exists
-        run: ls .gitignore
-
       - name: Check if workflow exists
         run: ls .github/workflows/repo-check.yml
 

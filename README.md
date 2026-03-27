@@ -5,6 +5,7 @@
 - Understand file states and commit flow
 - Build cleaner repo habits
 - Understand CI/CD practices by creating a GitHub Actions workflow
+- Practice repo quality cleanup habits
 
 ## Contents
 - notes.txt
@@ -12,7 +13,8 @@
 - .gitignore
 - README.md
 - keep.log
-- repo-check.yml
+- .github/workflows/repo-check.yml
+- scripts/script.sh
 
 ## What I Practiced
 - git init
@@ -34,12 +36,12 @@
 - Verified ignore behavior with .gitignore
 - Verified tracked vs ignored behavior with keep.log
 - Verified added tag to a commit
-- Verify changes made before and after staging
-- Verify current directory, repo files and README.md contents
-- Verify README.md exists through workflow
-- Verified .gitignore and workflow exist
+- Verified changes before and after staging
+- Verified current directory, repo files and README.md contents
+- Verified README, .gitignore and workflow exist
 - Verified README contains project heading
-- Verified README and .gitignore exist in repo
+- Verified repo docs and file quality
+- Verified documentation accuracy
 
 ## Next Automation Step
 - Add a basic CI workflow later
