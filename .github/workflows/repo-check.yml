@@ -33,4 +33,4 @@ jobs:
         run: grep "# Git Block 1 Lab" README.md
 
       - name: Check if README and .gitignore exist
-        run: ./script.sh
+        run: scripts/script.sh
