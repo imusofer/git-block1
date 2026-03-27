@@ -37,8 +37,9 @@
 - Verify changes made before and after staging
 - Verify current directory, repo files and README.md contents
 - Verify README.md exists through workflow
-- Verified .gitgnore and workflow exist
+- Verified .gitignore and workflow exist
 - Verified README contains project heading
+- Verified README and .gitignore exist in repo
 
 ## Next Automation Step
 - Add a basic CI workflow later
