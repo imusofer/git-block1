@@ -28,3 +28,6 @@ jobs:
 
       - name: Check if workflow exists
         run: ls .github/workflows/repo-check.yml
+
+      - name: Check if README contains project header
+        run: grep "# Git Block 1 Lab" README.md

@@ -38,6 +38,7 @@
 - Verify current directory, repo files and README.md contents
 - Verify README.md exists through workflow
 - Verified .gitgnore and workflow exist
+- Verified README contains project heading
 
 ## Next Automation Step
 - Add a basic CI workflow later
