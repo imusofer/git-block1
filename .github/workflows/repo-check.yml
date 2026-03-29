@@ -29,5 +29,8 @@ jobs:
       - name: Check if README and .gitignore exist
         run: scripts/script.sh
 
-      - name: Verify Python script works
-        run: python3 scripts/py-block1.py git-block1
+      - name: Verify Python script accepts status learning
+        run: python3 scripts/py-block1.py learning
+
+      - name: Verify Python script accepts status review
+        run: python3 scripts/py-block1.py review
