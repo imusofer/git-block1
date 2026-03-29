@@ -6,6 +6,7 @@
 - Build cleaner repo habits
 - Understand CI/CD practices by creating a GitHub Actions workflow
 - Practice repo quality cleanup habits
+- Practice Python automation scripting
 
 ## Contents
 - notes.txt
@@ -15,6 +16,7 @@
 - keep.log
 - .github/workflows/repo-check.yml
 - scripts/script.sh
+- scripts/py-block1.py
 
 ## What I Practiced
 - git init
@@ -29,6 +31,8 @@
 - git diff --staged
 - git branch
 - git switch
+- Python variables
+- print(f"")
 
 ## Manual Validation
 - Checked repo state with git status
@@ -44,5 +48,6 @@
 - Verified documentation accuracy
 
 ## Next Automation Step
-- Add a basic CI workflow later
+- Add a basic CI workflow
 - Automate repo validation on push
+- Construct a Python automation script
