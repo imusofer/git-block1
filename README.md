@@ -35,6 +35,7 @@
 - Python strings
 - Python f-strings
 - Create a basic Python repo script
+- One argument with multiple valid lines
 
 ## Manual Validation
 - Checked repo state with git status
@@ -53,4 +54,3 @@
 ## Next Automation Step
 - Automate repo validation on push
 - Construct a Python automation script
-
