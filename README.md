@@ -32,7 +32,9 @@
 - git branch
 - git switch
 - Python variables
-- print(f"")
+- Python strings
+- Python f-strings
+- Create a basic Python repo script
 
 ## Manual Validation
 - Checked repo state with git status
@@ -48,6 +50,6 @@
 - Verified documentation accuracy
 
 ## Next Automation Step
-- Add a basic CI workflow
 - Automate repo validation on push
 - Construct a Python automation script
+
