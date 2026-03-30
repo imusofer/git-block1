@@ -3,7 +3,3 @@ with open("data/statuses.txt", encoding="utf-8") as f:
     for line in f:
         count+=1
         print(f"Status {count}: {line.strip()}")
-
-
-
-

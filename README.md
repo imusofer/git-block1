@@ -61,5 +61,5 @@
 - Verified second Python script reads statuses from file
 
 ## Next Automation Step
-- Processing multiple items through Python
-- Processing a text file's content through Python
+- Reading statuses from a text file
+- CI validating the file-processing script
