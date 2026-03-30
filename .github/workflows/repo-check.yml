@@ -34,3 +34,6 @@ jobs:
 
       - name: Verify Python script accepts status review
         run: python3 scripts/py-block1.py review
+
+      - name: Verify second Python script works
+        run: python3 scripts/py-block2.py
