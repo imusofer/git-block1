@@ -18,6 +18,7 @@
 - scripts/script.sh
 - scripts/py-block1.py
 - scripts/py-block2.py
+- data/statuses.txt
 
 ## What I Practiced
 - git init
@@ -39,8 +40,10 @@
 - One argument with multiple valid values
 - Python for loops
 - Python lists
-- Python range
-- Python length
+- Python range()
+- Python len()
+- Python with open()
+- Python line.strip()
 
 ## Manual Validation
 - Checked repo state with git status
@@ -58,3 +61,4 @@
 
 ## Next Automation Step
 - Processing multiple items through Python
+- Processing a text file's content through Python

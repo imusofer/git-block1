@@ -1,7 +1,8 @@
-statuses = ["learning", "review", "complete"]
-
-for i in range(len(statuses)):
-    print(f"Status {i + 1}: {statuses[i]}")
+with open("data/statuses.txt", encoding="utf-8") as f:
+    count = 0
+    for line in f:
+        count+=1
+        print(f"Status {count}: {line.strip()}")
 
 
 
