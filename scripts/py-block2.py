@@ -1,10 +1,8 @@
 statuses = ["learning", "review", "complete"]
-count = 0
 
-for status in statuses:
-    count+=1
-    print(f"Status {count}: {status}")
+for i in range(len(statuses)):
+    print(f"Status {i + 1}: {statuses[i]}")
 
-    
+
 
 

@@ -37,8 +37,10 @@
 - Python f-strings
 - Create a basic Python repo script
 - One argument with multiple valid values
-- For loops
-- Lists
+- Python for loops
+- Python lists
+- Python range
+- Python length
 
 ## Manual Validation
 - Checked repo state with git status
