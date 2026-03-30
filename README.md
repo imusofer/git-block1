@@ -17,6 +17,7 @@
 - .github/workflows/repo-check.yml
 - scripts/script.sh
 - scripts/py-block1.py
+- scripts/py-block2.py
 
 ## What I Practiced
 - git init
@@ -36,6 +37,8 @@
 - Python f-strings
 - Create a basic Python repo script
 - One argument with multiple valid values
+- For loops
+- Lists
 
 ## Manual Validation
 - Checked repo state with git status
@@ -52,4 +55,4 @@
 - Verified Python script functionality
 
 ## Next Automation Step
-- Expand CI to vlaidate both vali Python statuses: learning and review
+- Processing multiple items through Python
