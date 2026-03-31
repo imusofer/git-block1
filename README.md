@@ -21,6 +21,7 @@
 - scripts/py-block2.py
 - Dockerfile
 - data/statuses.txt
+- .dockerignore
 
 ## What I Practiced
 - git init
@@ -46,8 +47,11 @@
 - Python len()
 - Python with open()
 - Python line.strip()
-- docker build -t git-block1-py-block2 .
-- docker run --rm git-block1-py-block2
+- Dockerfile basics
+- docker build -t
+- docker run --rm
+- Containerizing a Python script
+- .dockerignore structure and behavior
 
 ## Manual Validation
 - Checked repo state with git status
@@ -63,7 +67,7 @@
 - Verified documentation accuracy
 - Verified Python script functionality
 - Verified second Python script reads statuses from file
+- Verified containerized Python script runs successfully and prints the expected output
 
 ## Next Automation Step
-- Reading statuses from a text file
-- CI validating the file-processing script
+- Validate containerized execution in CI
