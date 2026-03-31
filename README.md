@@ -7,6 +7,7 @@
 - Understand CI/CD practices by creating a GitHub Actions workflow
 - Practice repo quality cleanup habits
 - Practice Python automation scripting
+- Practice building a Docker image and running a Docker container
 
 ## Contents
 - notes.txt
@@ -18,6 +19,7 @@
 - scripts/script.sh
 - scripts/py-block1.py
 - scripts/py-block2.py
+- Dockerfile
 - data/statuses.txt
 
 ## What I Practiced
@@ -44,6 +46,8 @@
 - Python len()
 - Python with open()
 - Python line.strip()
+- docker build -t git-block1-py-block2 .
+- docker run --rm git-block1-py-block2
 
 ## Manual Validation
 - Checked repo state with git status
