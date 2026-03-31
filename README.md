@@ -69,6 +69,7 @@
 - Verified second Python script reads statuses from file
 - Verified containerized Python script runs successfully and prints the expected output
 - Verified Docker image builds successfully
+- Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
 - Validate containerized execution in CI

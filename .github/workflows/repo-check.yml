@@ -40,3 +40,6 @@ jobs:
 
       - name: Verify Docker image builds successfully
         run: docker build -t git-block1-py-block2 .
+
+      - name: Verify Docker image runs successfully
+        run: docker run --rm git-block1-py-block2
