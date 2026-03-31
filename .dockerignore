@@ -1,8 +1,8 @@
 debug.log
-.git
-.github
+.git/
+.github/
 .gitignore
 keep.log
 notes.txt
 README.md
-temp
+temp/

@@ -37,3 +37,6 @@ jobs:
 
       - name: Verify second Python script reads statuses from a text file
         run: python3 scripts/py-block2.py
+
+      - name: Verify Docker image builds successfully
+        run: docker build -t git-block1-py-block2 .
