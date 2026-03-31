@@ -72,4 +72,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate containerized execution in CI
+- Validate Docker build and runtime from a cleaner dedicated workflow path
