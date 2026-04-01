@@ -8,6 +8,7 @@
 - Practice repo quality cleanup habits
 - Practice Python automation scripting
 - Practice building a Docker image and running a Docker container
+- Practice building a Kubernetes Deployment Pod manifest
 
 ## Contents
 - notes.txt
@@ -22,6 +23,7 @@
 - Dockerfile
 - data/statuses.txt
 - .dockerignore
+- k8s/py-block2-pod.yaml
 
 ## What I Practiced
 - git init
@@ -52,6 +54,7 @@
 - docker run --rm
 - Containerizing a Python script
 - .dockerignore structure and behavior
+- Kubernetes Deployment yaml file structure and behavior
 
 ## Manual Validation
 - Checked repo state with git status
@@ -72,4 +75,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate Docker build and runtime from a cleaner dedicated workflow path
+- Validate Kubernetes Deployment successfully deploys Pods as described 
