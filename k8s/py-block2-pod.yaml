@@ -1,9 +1,18 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: py-block2-k8s
+  name: py-block2-deployment
 spec:
-  containers:
-    - name: py-block2-container
-      image: git-block1-py-block2
-      imagePullPolicy: Never
+  replicas: 1
+  selector:
+    matchLabels:
+      app: py-block2
+  template:
+    metadata:
+      labels:
+        app: py-block2
+    spec:
+      containers:
+      - name: py-block2-container
+        image: git-block1-py-block2
+        imagePullPolicy: Never

@@ -13,6 +13,7 @@
 - Practice running a Kubernetes Pod manifest from loaded Docker image
 - Practice inspecting Pod status and history logs
 - Practice inspecting cluster name
+- Practice building a Kuberneted Deployment manifest
 
 ## Contents
 - notes.txt
@@ -64,7 +65,7 @@
 - Apply manifest from YAML file - kubectl apply -f <manifest-name>
 - Check Pod status - kubectl get pod
 - Inspect in-depth information of the pod - kubectl describe pod <pod-name>
-- Inspect Pod logs - kubectl logs <pod-name> 
+- Inspect Pod logs - kubectl logs <pod-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -85,4 +86,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate Kubernetes successfully deploys Pods as described 
+- Validate Kubernetes successfully deploys Deployment as described 
