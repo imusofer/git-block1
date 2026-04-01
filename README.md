@@ -13,7 +13,8 @@
 - Practice running a Kubernetes Pod manifest from loaded Docker image
 - Practice inspecting Pod status and history logs
 - Practice inspecting cluster name
-- Practice building a Kuberneted Deployment manifest
+- Practice building a Kubernetes Deployment manifest
+- Practice running a Kubernetes Deployment manifest
 
 ## Contents
 - notes.txt
@@ -28,7 +29,7 @@
 - Dockerfile
 - data/statuses.txt
 - .dockerignore
-- k8s/py-block2-pod.yaml
+- k8s/py-block2-deployment.yaml
 
 ## What I Practiced
 - git init
@@ -64,6 +65,8 @@
 - Load Docker image into cluster - kind load docker-image <image-name> --name <cluster-name>
 - Apply manifest from YAML file - kubectl apply -f <manifest-name>
 - Check Pod status - kubectl get pod
+- Check Deployment status - kubectl get deployments
+- Inspect in depth information of the deployment - kubectl describe deployment <deployment-name>
 - Inspect in-depth information of the pod - kubectl describe pod <pod-name>
 - Inspect Pod logs - kubectl logs <pod-name>
 
@@ -86,4 +89,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate Kubernetes successfully deploys Deployment as described 
+- Validate Kubernetes successfully applies and manages the Deployment
