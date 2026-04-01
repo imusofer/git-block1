@@ -8,7 +8,11 @@
 - Practice repo quality cleanup habits
 - Practice Python automation scripting
 - Practice building a Docker image and running a Docker container
-- Practice building a Kubernetes Deployment Pod manifest
+- Practice building a Kubernetes Pod manifest
+- Practice loading a Docker image to use for Kubernetes Pod manifest
+- Practice running a Kubernetes Pod manifest from loaded Docker image
+- Practice inspecting Pod status and history logs
+- Practice inspecting cluster name
 
 ## Contents
 - notes.txt
@@ -54,7 +58,13 @@
 - docker run --rm
 - Containerizing a Python script
 - .dockerignore structure and behavior
-- Kubernetes Deployment yaml file structure and behavior
+- Kubernetes Pod YAML file structure and behavior
+- kind get clusters
+- Load Docker image into cluster - kind load docker-image <image-name> --name <cluster-name>
+- Apply manifest from YAML file - kubectl apply -f <manifest-name>
+- Check Pod status - kubectl get pod
+- Inspect in-depth information of the pod - kubectl describe pod <pod-name>
+- Inspect Pod logs - kubectl logs <pod-name> 
 
 ## Manual Validation
 - Checked repo state with git status
@@ -75,4 +85,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate Kubernetes Deployment successfully deploys Pods as described 
+- Validate Kubernetes successfully deploys Pods as described 
