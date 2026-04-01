@@ -89,4 +89,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate Kubernetes successfully applies and manages the Deployment
+- Validate a Kubernetes Job for the run-to-completion containerized Python script
