@@ -18,6 +18,7 @@
 - Practice building and running a Kubernetes Job manifest
 - Practice building and running a Kubernetes CronJob manifest
 - Practice suspending and resuming a Kubernetes CronJob manifest
+- Practice running a one-off Job from a suspended Kubernetes CronJob manifest
 
 ## Contents
 - notes.txt
@@ -75,6 +76,7 @@
 - Inspect in-depth information of the pod - kubectl describe pod <pod-name>
 - Inspect Pod logs - kubectl logs <pod-name>
 - Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
+- Running a one-off Job from a suspended CronJob manifest - kubectl create job <manual-job-name> --from=cronjob/<cronjob-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -95,4 +97,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Create a one-off Job from an existing CronJob
+- Create a failing Job and verify failure behavior
