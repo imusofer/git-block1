@@ -19,6 +19,7 @@
 - Practice building and running a Kubernetes CronJob manifest
 - Practice suspending and resuming a Kubernetes CronJob manifest
 - Practice running a one-off Job from a suspended Kubernetes CronJob manifest
+- Practice creating a failing Job and verify failure behavior
 
 ## Contents
 - notes.txt
@@ -97,4 +98,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Create a failing Job and verify failure behavior
+- Create a long-running Python HTTP app

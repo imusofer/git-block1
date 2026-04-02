@@ -10,4 +10,6 @@ spec:
         - name: py-block2-job-container
           image: git-block1-py-block2
           imagePullPolicy: Never
+          command: ["/bin/bash"]
+          args: ["-c", "exit 1"]
   backoffLimit: 0
