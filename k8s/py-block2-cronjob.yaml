@@ -4,6 +4,7 @@ metadata:
   name: py-block2-cronjob
 spec:
   schedule: "* * * * *"
+  suspend: false
   jobTemplate:
     spec:
       backoffLimit: 0

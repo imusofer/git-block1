@@ -17,6 +17,7 @@
 - Practice running a Kubernetes Deployment manifest
 - Practice building and running a Kubernetes Job manifest
 - Practice building and running a Kubernetes CronJob manifest
+- Practice suspending and resuming a Kubernetes CronJob manifest
 
 ## Contents
 - notes.txt
@@ -72,7 +73,7 @@
 - Check Deployment status - kubectl get deployments
 - Inspect in depth information of the deployment - kubectl describe deployment <deployment-name>
 - Inspect in-depth information of the pod - kubectl describe pod <pod-name>
-- Inspect Pod logs - kubectl logs <pod-name
+- Inspect Pod logs - kubectl logs <pod-name>
 - Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
 
 ## Manual Validation
@@ -94,4 +95,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate a Kubernetes CronJob runs successfully
+- Create a one-off Job from an existing CronJob
