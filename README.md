@@ -15,6 +15,7 @@
 - Practice inspecting cluster name
 - Practice building a Kubernetes Deployment manifest
 - Practice running a Kubernetes Deployment manifest
+- Practice building and running a Kubernetes Job manifest
 
 ## Contents
 - notes.txt

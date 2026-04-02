@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: py-block2-job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: py-block2-job-container
+          image: git-block1-py-block2
+          imagePullPolicy: Never
+  backoffLimit: 0
