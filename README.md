@@ -16,6 +16,7 @@
 - Practice building a Kubernetes Deployment manifest
 - Practice running a Kubernetes Deployment manifest
 - Practice building and running a Kubernetes Job manifest
+- Practice building and running a Kubernetes CronJob manifest
 
 ## Contents
 - notes.txt
@@ -31,6 +32,8 @@
 - data/statuses.txt
 - .dockerignore
 - k8s/py-block2-deployment.yaml
+- k8s/py-block2-job.yaml
+- k8s/py-block2-cronjob.yaml
 
 ## What I Practiced
 - git init
@@ -69,7 +72,8 @@
 - Check Deployment status - kubectl get deployments
 - Inspect in depth information of the deployment - kubectl describe deployment <deployment-name>
 - Inspect in-depth information of the pod - kubectl describe pod <pod-name>
-- Inspect Pod logs - kubectl logs <pod-name>
+- Inspect Pod logs - kubectl logs <pod-name
+- Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -90,4 +94,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Validate a Kubernetes Job for the run-to-completion containerized Python script
+- Validate a Kubernetes CronJob runs successfully

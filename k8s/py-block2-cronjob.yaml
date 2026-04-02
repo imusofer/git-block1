@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: py-block2-cronjob
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: py-block2-cronjob-container
+              image: git-block1-py-block2
+              imagePullPolicy: Never
