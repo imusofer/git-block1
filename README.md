@@ -20,6 +20,7 @@
 - Practice suspending and resuming a Kubernetes CronJob manifest
 - Practice running a one-off Job from a suspended Kubernetes CronJob manifest
 - Practice creating a failing Job and verify failure behavior
+- Practice building a long-running Flask HTTP app with 4 route handlers
 
 ## Contents
 - notes.txt
@@ -37,6 +38,7 @@
 - k8s/py-block2-deployment.yaml
 - k8s/py-block2-job.yaml
 - k8s/py-block2-cronjob.yaml
+- app/py-block3.py
 
 ## What I Practiced
 - git init
@@ -78,6 +80,10 @@
 - Inspect Pod logs - kubectl logs <pod-name>
 - Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
 - Running a one-off Job from a suspended CronJob manifest - kubectl create job <manual-job-name> --from=cronjob/<cronjob-name>
+- Python @app.route("")
+- Python os.getenv()
+- Python datetime.now(ZoneInfo()).isoformat()
+- Python main guard - if __name__ == "__main__":
 
 ## Manual Validation
 - Checked repo state with git status
@@ -98,4 +104,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Create a long-running Python HTTP app
+- Containerize a long-running HTTP web app
