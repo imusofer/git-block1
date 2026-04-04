@@ -26,6 +26,7 @@
 - Practice running the long-running app in detached mode and inspect it operationally
 - Practice building and running a Kubernetes Deployment manifest for the long-running app.
 - Practice building and running a Kubernetes Service manifest for the long-running app deployment.
+- Practice scaling deployment and verifying service scales with it.
 
 ## Contents
 - notes.txt
@@ -98,6 +99,7 @@
 - docker logs <container-name/ID>
 - docker stop <container-name/ID>
 - kubectl port-forward service/<service-name> <port>:<port>
+- kubectl scale deployment <deployment-name> --replicas=<n>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -118,4 +120,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Scale the Deployment and verify the Service updates it
+- Update the Deployment image/config and verify a rolling update
