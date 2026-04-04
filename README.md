@@ -27,6 +27,7 @@
 - Practice building and running a Kubernetes Deployment manifest for the long-running app.
 - Practice building and running a Kubernetes Service manifest for the long-running app deployment.
 - Practice scaling deployment and verifying service scales with it.
+- Practing updating Deployment config and verify a rolling update
 
 ## Contents
 - notes.txt
@@ -120,4 +121,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Update the Deployment image/config and verify a rolling update
+- Add readiness and liveness probes to the long-running app Deployment
