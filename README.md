@@ -24,6 +24,7 @@
 - Practice containerizing the long-running app and verify it runs successfully
 - Practice sequencing Dockerfile layers for efficiency.
 - Practice running the long-running app in detached mode and inspect it operationally
+- Practice building and running a Kubernetes Deployment manifest for the long-running app.
 
 ## Contents
 - notes.txt
@@ -44,6 +45,7 @@
 - app/py-block3.py
 - app/Dockerfile
 - app/requirements.txt
+- k8s/py-block3-deployment.yaml
 
 ## What I Practiced
 - git init
@@ -113,4 +115,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Create a Deployment manifest for the long-running app
+- Create a Service manifest for the long-running app Deployment

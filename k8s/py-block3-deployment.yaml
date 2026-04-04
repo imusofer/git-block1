@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: py-block3-deployment
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: py-block3
+  template:
+    metadata:
+      labels:
+        app: py-block3
+    spec:
+     containers:
+      - name: py-block3-container
+        image: git-block1-py-block3
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        env:
+          - name: APP_ENV
+            value: dev
+          - name: APP_VERSION
+            value: v1
