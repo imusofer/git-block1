@@ -22,6 +22,7 @@
 - Practice creating a failing Job and verify failure behavior
 - Practice building a long-running Flask HTTP app with 4 route handlers
 - Practice containerizing the long-running app and verify it runs successfully
+- Practice sequencing Dockerfile layers for efficiency.
 
 ## Contents
 - notes.txt
@@ -107,4 +108,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Rebuild the image after chaning the app and observe layer cache behavior
+- Run a Docker container in detached mode
