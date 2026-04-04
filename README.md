@@ -25,6 +25,7 @@
 - Practice sequencing Dockerfile layers for efficiency.
 - Practice running the long-running app in detached mode and inspect it operationally
 - Practice building and running a Kubernetes Deployment manifest for the long-running app.
+- Practice building and running a Kubernetes Service manifest for the long-running app deployment.
 
 ## Contents
 - notes.txt
@@ -46,6 +47,7 @@
 - app/Dockerfile
 - app/requirements.txt
 - k8s/py-block3-deployment.yaml
+- k8s/py-block3-service.yaml
 
 ## What I Practiced
 - git init
@@ -95,6 +97,7 @@
 - docker ps
 - docker logs <container-name/ID>
 - docker stop <container-name/ID>
+- kubectl port-forward service/<service-name> <port>:<port>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -115,4 +118,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Create a Service manifest for the long-running app Deployment
+- Scale the Deployment and verify the Service updates it
