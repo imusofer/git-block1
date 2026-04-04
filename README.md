@@ -23,6 +23,7 @@
 - Practice building a long-running Flask HTTP app with 4 route handlers
 - Practice containerizing the long-running app and verify it runs successfully
 - Practice sequencing Dockerfile layers for efficiency.
+- Practice running the long-running app in detached mode and inspect it operationally
 
 ## Contents
 - notes.txt
@@ -88,6 +89,10 @@
 - Python os.getenv()
 - Python datetime.now(ZoneInfo()).isoformat()
 - Python main guard - if __name__ == "__main__":
+- docker run -d --rm --name <container-name>
+- docker ps
+- docker logs <container-name/ID>
+- docker stop <container-name/ID>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -108,4 +113,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Run a Docker container in detached mode
+- Create a Deployment manifest for the long-running app
