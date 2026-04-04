@@ -21,6 +21,7 @@
 - Practice running a one-off Job from a suspended Kubernetes CronJob manifest
 - Practice creating a failing Job and verify failure behavior
 - Practice building a long-running Flask HTTP app with 4 route handlers
+- Practice containerizing the long-running app and verify it runs successfully
 
 ## Contents
 - notes.txt
@@ -39,6 +40,8 @@
 - k8s/py-block2-job.yaml
 - k8s/py-block2-cronjob.yaml
 - app/py-block3.py
+- app/Dockerfile
+- app/requirements.txt
 
 ## What I Practiced
 - git init
@@ -104,4 +107,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Containerize a long-running HTTP web app
+- Rebuild the image after chaning the app and observe layer cache behavior
