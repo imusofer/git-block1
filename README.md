@@ -28,7 +28,8 @@
 - Practice building and running a Kubernetes Service manifest for the long-running app deployment
 - Practice scaling deployment and verifying service scales with it
 - Practice updating Deployment config and verifying a rolling update
-- Add readiness and liveness probes to Deployment manifest
+- Practice adding readiness and liveness probes to Deployment manifest
+- Practice simulating a readiness probe failure and observing Pod and Service behavior
 
 ## Contents
 - notes.txt
@@ -122,4 +123,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Simulate a readiness probe failure and verify the Pod is removed from Service endpoints
+- Simulate a liveness probe failure and verify the container is restarted

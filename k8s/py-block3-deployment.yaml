@@ -22,11 +22,11 @@ spec:
          env:
            - name: APP_ENV
              value: dev
-          -  name: APP_VERSION
+           - name: APP_VERSION
              value: v2
          readinessProbe:
            httpGet:
-             path: /health
+             path: /badpath
              port: 5000
            initialDelaySeconds: 5
            periodSeconds: 5
