@@ -22,12 +22,13 @@
 - Practice creating a failing Job and verify failure behavior
 - Practice building a long-running Flask HTTP app with 4 route handlers
 - Practice containerizing the long-running app and verify it runs successfully
-- Practice sequencing Dockerfile layers for efficiency.
+- Practice sequencing Dockerfile layers for efficiency
 - Practice running the long-running app in detached mode and inspect it operationally
-- Practice building and running a Kubernetes Deployment manifest for the long-running app.
-- Practice building and running a Kubernetes Service manifest for the long-running app deployment.
-- Practice scaling deployment and verifying service scales with it.
-- Practing updating Deployment config and verify a rolling update
+- Practice building and running a Kubernetes Deployment manifest for the long-running app
+- Practice building and running a Kubernetes Service manifest for the long-running app deployment
+- Practice scaling deployment and verifying service scales with it
+- Practice updating Deployment config and verifying a rolling update
+- Add readiness and liveness probes to Deployment manifest
 
 ## Contents
 - notes.txt
@@ -121,4 +122,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Add readiness and liveness probes to the long-running app Deployment
+- Simulate a readiness probe failure and verify the Pod is removed from Service endpoints

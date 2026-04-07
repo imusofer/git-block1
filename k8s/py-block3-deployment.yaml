@@ -13,14 +13,32 @@ spec:
       labels:
         app: py-block3
     spec:
-     containers:
-      - name: py-block3-container
-        image: git-block1-py-block3
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 5000
-        env:
-          - name: APP_ENV
-            value: dev
-          - name: APP_VERSION
-            value: v2
+       containers:
+       - name: py-block3-container
+         image: git-block1-py-block3
+         imagePullPolicy: Never
+         ports:
+         - containerPort: 5000
+         env:
+           - name: APP_ENV
+             value: dev
+          -  name: APP_VERSION
+             value: v2
+         readinessProbe:
+           httpGet:
+             path: /health
+             port: 5000
+           initialDelaySeconds: 5
+           periodSeconds: 5
+           timeoutSeconds: 1
+           failureThreshold: 2
+           successThreshold: 1
+         livenessProbe:
+           httpGet:
+             path: /health
+             port: 5000
+           initialDelaySeconds: 5
+           periodSeconds: 5
+           timeoutSeconds: 3
+           failureThreshold: 3
+           successThreshold: 1
