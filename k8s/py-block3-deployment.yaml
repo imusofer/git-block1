@@ -26,7 +26,7 @@ spec:
              value: v2
          readinessProbe:
            httpGet:
-             path: /badpath
+             path: /health
              port: 5000
            initialDelaySeconds: 5
            periodSeconds: 5
@@ -35,7 +35,7 @@ spec:
            successThreshold: 1
          livenessProbe:
            httpGet:
-             path: /health
+             path: /badpath
              port: 5000
            initialDelaySeconds: 5
            periodSeconds: 5
