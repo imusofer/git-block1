@@ -30,7 +30,8 @@
 - Practice updating Deployment config and verifying a rolling update
 - Practice adding readiness and liveness probes to Deployment manifest
 - Practice simulating a readiness probe failure and observing Pod and Service behavior
-- Practice simulating a liveness probe failuire and observing Deployment and Pod behavior
+- Practice simulating a liveness probe failure and observing Deployment and Pod behavior
+- Practice restoring readiness and liveness probes to a healthy state and observing Pod and Deployment behavior
 
 ## Contents
 - notes.txt
@@ -124,4 +125,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Restore healthy readiness and liveness probes and verify the Deployment stabilizes
+- Add a startup probe and verify it protects a slow-starting container

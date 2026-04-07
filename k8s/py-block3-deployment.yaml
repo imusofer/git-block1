@@ -35,7 +35,7 @@ spec:
            successThreshold: 1
          livenessProbe:
            httpGet:
-             path: /badpath
+             path: /health
              port: 5000
            initialDelaySeconds: 5
            periodSeconds: 5
