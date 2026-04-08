@@ -33,6 +33,9 @@
 - Practice simulating a liveness probe failure and observing Deployment and Pod behavior
 - Practice restoring readiness and liveness probes to a healthy state and observing Pod and Deployment behavior
 - Add a configurable startup delay behavior to the Flask app
+- Edit the Dockerfile and build a new Docker image to reflect the changes made to the Flask app
+- Add a STARTUP_DELAY environment variable to the Kubernetes Deployment manifest
+- Observed Deployment and Pod behavior when startup delay exceeded readiness and liveness probe thresholds.
 
 ## Contents
 - notes.txt

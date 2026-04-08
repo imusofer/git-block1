@@ -24,6 +24,8 @@ spec:
              value: dev
            - name: APP_VERSION
              value: v2
+           - name: STARTUP_DELAY
+             value: "30"
          readinessProbe:
            httpGet:
              path: /health
