@@ -37,6 +37,7 @@
 - Add a STARTUP_DELAY environment variable to the Kubernetes Deployment manifest
 - Observed Deployment and Pod behavior when startup delay exceeded readiness and liveness probe thresholds
 - Practice adding a startup probe to the Deployment manifest and observing how the Deployment and Pods behave during slow application startup
+- Build a script that validates the py-block3 workload by applying the Service and Deployment manifests, waiting for rollout completion, and listing Pods filtered by the Flask app label.
 
 ## Contents
 - notes.txt
@@ -48,6 +49,7 @@
 - scripts/script.sh
 - scripts/py-block1.py
 - scripts/py-block2.py
+- scripts/validate-py-block3-deployment.sh
 - Dockerfile
 - data/statuses.txt
 - .dockerignore
@@ -94,6 +96,7 @@
 - Load Docker image into cluster - kind load docker-image <image-name> --name <cluster-name>
 - Apply manifest from YAML file - kubectl apply -f <manifest-name>
 - Check Pod status - kubectl get pod
+- Get Pods that match app label - kubectl get pods -l app=<app-label>
 - Check Deployment status - kubectl get deployments
 - Inspect in depth information of the deployment - kubectl describe deployment <deployment-name>
 - Inspect in-depth information of the pod - kubectl describe pod <pod-name>
@@ -130,4 +133,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Automate the verification loop for the Kubernetes Deployment
+- Extend the validation script to surface rollout diagnostics when the py-block3 workload does not stabilize
