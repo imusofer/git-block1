@@ -32,6 +32,7 @@
 - Practice simulating a readiness probe failure and observing Pod and Service behavior
 - Practice simulating a liveness probe failure and observing Deployment and Pod behavior
 - Practice restoring readiness and liveness probes to a healthy state and observing Pod and Deployment behavior
+- Add a configurable startup delay behavior to the Flask app
 
 ## Contents
 - notes.txt
