@@ -35,7 +35,8 @@
 - Add a configurable startup delay behavior to the Flask app
 - Edit the Dockerfile and build a new Docker image to reflect the changes made to the Flask app
 - Add a STARTUP_DELAY environment variable to the Kubernetes Deployment manifest
-- Observed Deployment and Pod behavior when startup delay exceeded readiness and liveness probe thresholds.
+- Observed Deployment and Pod behavior when startup delay exceeded readiness and liveness probe thresholds
+- Practice adding a startup probe to the Deployment manifest and observing how the Deployment and Pods behave during slow application startup
 
 ## Contents
 - notes.txt
@@ -129,4 +130,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Add a startup probe and verify it protects a slow-starting container
+- Automate the verification loop for the Kubernetes Deployment

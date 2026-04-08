@@ -26,6 +26,12 @@ spec:
              value: v2
            - name: STARTUP_DELAY
              value: "30"
+         startupProbe:
+           httpGet:
+             path: /health
+             port: 5000
+           periodSeconds: 5
+           failureThreshold: 8
          readinessProbe:
            httpGet:
              path: /health
