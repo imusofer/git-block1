@@ -39,11 +39,12 @@
 - Practice adding a startup probe to the Deployment manifest and observing how the Deployment and Pods behave during slow application startup
 - Build a script that validates the py-block3 workload by applying the Service and Deployment manifests, waiting for rollout completion, and listing Pods filtered by the Flask app label.
 - Add a failure path to the validation script and observe script behavior after purposely breaking the rollout health
+- Extend the validation script to show recent Pod logs for the py-block3 workload when rollout validation fails
 
 ## Contents
 - notes.txt
 - readme.txt
-- .gitignorek
+- .gitignore
 - README.md
 - keep.log
 - .github/workflows/repo-check.yml
@@ -115,6 +116,7 @@
 - kubectl port-forward service/<service-name> <port>:<port>
 - kubectl scale deployment <deployment-name> --replicas=<n>
 - kubectl rollout status deployment/<deployment-name>
+- kubectl logs -l app=<app-label> --trail=5 --prefix=true
 
 ## Manual Validation
 - Checked repo state with git status
@@ -135,4 +137,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Extend the validation script to show recent Pod logs for the py-block3 workload when rollout validation fails
+- Extend the validation script to print recent Kubernetes events for the py-block3 workload when rollout validation fails
