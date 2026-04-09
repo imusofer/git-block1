@@ -38,6 +38,7 @@
 - Observed Deployment and Pod behavior when startup delay exceeded readiness and liveness probe thresholds
 - Practice adding a startup probe to the Deployment manifest and observing how the Deployment and Pods behave during slow application startup
 - Build a script that validates the py-block3 workload by applying the Service and Deployment manifests, waiting for rollout completion, and listing Pods filtered by the Flask app label.
+- Add a failure path to the validation script and observe script behavior after purposely breaking the rollout health
 
 ## Contents
 - notes.txt
@@ -113,6 +114,7 @@
 - docker stop <container-name/ID>
 - kubectl port-forward service/<service-name> <port>:<port>
 - kubectl scale deployment <deployment-name> --replicas=<n>
+- kubectl kubectl rollout status deployment/<deployment-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -133,4 +135,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Extend the validation script to surface rollout diagnostics when the py-block3 workload does not stabilize
+- Create a small script that revalidates teh workload in one go
