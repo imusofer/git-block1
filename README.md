@@ -41,6 +41,8 @@
 - Add a failure path to the validation script and observe script behavior after purposely breaking the rollout health
 - Extend the validation script to show recent Pod logs for the py-block3 workload when rollout validation fails
 - Extend the validation script to print recent Kubernetes events for the py-block3 workload when rollout validation fails
+- Refine the validation script to print only Warning Pod events when rollout validation fails
+- Refine the validation script to print only Warning Deployment events when rollout validation fails
 
 ## Contents
 - notes.txt
@@ -138,4 +140,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Refine the validation script to print only Warning Pod events for the py-block3 workload when rollout validation fails
+- Refine the validation script to label diagnostic sections more clearly when rollout validation fails

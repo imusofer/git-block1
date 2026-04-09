@@ -14,10 +14,10 @@ else
   kubectl describe pods -l app=py-block3
   kubectl logs -l app=py-block3 --tail=5 --prefix=true
   echo "Recent deployment events:"
-  kubectl events --for deployment/py-block3-deployment --types=Warning,Normal
+  kubectl events --for deployment/py-block3-deployment --types=Warning
   echo "Recent pod events:"
-  for i in $(kubectl get pods -l app=py-block3 -o name); do
-    kubectl events --for "$i"
+  for pod in $(kubectl get pods -l app=py-block3 -o name); do
+    kubectl events --for "$pod" --types=Warning
   done
   exit 1
 fi
