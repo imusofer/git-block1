@@ -43,7 +43,7 @@
 ## Contents
 - notes.txt
 - readme.txt
-- .gitignore
+- .gitignorek
 - README.md
 - keep.log
 - .github/workflows/repo-check.yml
@@ -114,7 +114,7 @@
 - docker stop <container-name/ID>
 - kubectl port-forward service/<service-name> <port>:<port>
 - kubectl scale deployment <deployment-name> --replicas=<n>
-- kubectl kubectl rollout status deployment/<deployment-name>
+- kubectl rollout status deployment/<deployment-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -135,4 +135,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Create a small script that revalidates teh workload in one go
+- Extend the validation script to show recent Pod logs for the py-block3 workload when rollout validation fails
