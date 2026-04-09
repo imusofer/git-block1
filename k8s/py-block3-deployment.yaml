@@ -25,16 +25,16 @@ spec:
            - name: APP_VERSION
              value: v2
            - name: STARTUP_DELAY
-             value: "0"
+             value: "30"
          startupProbe:
            httpGet:
              path: /health
              port: 5000
-           periodSeconds: 0
-           failureThreshold: 0
+           periodSeconds: 5
+           failureThreshold: 8
          readinessProbe:
            httpGet:
-             path: /badpath
+             path: /health
              port: 5000
            initialDelaySeconds: 5
            periodSeconds: 5
