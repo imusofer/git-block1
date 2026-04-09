@@ -116,7 +116,7 @@
 - kubectl port-forward service/<service-name> <port>:<port>
 - kubectl scale deployment <deployment-name> --replicas=<n>
 - kubectl rollout status deployment/<deployment-name>
-- kubectl logs -l app=<app-label> --trail=5 --prefix=true
+- kubectl logs -l app=<app-label> --tail=5 --prefix=true
 
 ## Manual Validation
 - Checked repo state with git status
