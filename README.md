@@ -44,6 +44,11 @@
 - Refine the validation script to print only Warning Pod events when rollout validation fails
 - Refine the validation script to print only Warning Deployment events when rollout validation fails
 - Refine the validation script to label diagnostic sections more clearly when rollout validation fails
+- Practice building a ConfigMap manifest to store environment variables used in the py-block3 Deployment
+- Edit the py-block3 Deployment manifest to replace inline env-var values with explicit configMapKeyRef mappings
+- Practice verifying live Pod env-var values with kubectl exec <pod-name> -- printenv
+- Apply a changed ConfigMap and observe that env-var changes do not refresh automatically in running Pods
+- Extend the validation script to accept a 'restart' argument that restarts the Deployment so new Pods pick up ConfigMap env changes
 
 ## Contents
 - notes.txt
@@ -67,6 +72,7 @@
 - app/requirements.txt
 - k8s/py-block3-deployment.yaml
 - k8s/py-block3-service.yaml
+- k8s/py-block3-configmap.yaml
 
 ## What I Practiced
 - git init
@@ -121,6 +127,10 @@
 - kubectl scale deployment <deployment-name> --replicas=<n>
 - kubectl rollout status deployment/<deployment-name>
 - kubectl logs -l app=<app-label> --tail=5 --prefix=true
+- kubectl get configmaps
+- kubectl describe configmap <configmap-name>
+- kubectl exec <pod-name> -- printenv
+- kubectl rollout restart deployment/<deployment-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -141,4 +151,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Suppress empty Deployment Warning events output when no matching Warning events exist
+- Move sensitive app configuration out of the Deployment and into a Kubernetes Secret

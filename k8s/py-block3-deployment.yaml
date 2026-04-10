@@ -21,11 +21,20 @@ spec:
          - containerPort: 5000
          env:
            - name: APP_ENV
-             value: dev
+             valueFrom:
+               configMapKeyRef:
+                 name: py-block3-configmap
+                 key: APP_ENV
            - name: APP_VERSION
-             value: v2
+             valueFrom:
+               configMapKeyRef:
+                 name: py-block3-configmap
+                 key: APP_VERSION
            - name: STARTUP_DELAY
-             value: "30"
+             valueFrom:
+               configMapKeyRef:
+                 name: py-block3-configmap
+                 key: STARTUP_DELAY
          startupProbe:
            httpGet:
              path: /health
