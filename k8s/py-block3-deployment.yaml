@@ -35,6 +35,11 @@ spec:
                configMapKeyRef:
                  name: py-block3-configmap
                  key: STARTUP_DELAY
+           - name: APP_SECRET_TOKEN
+             valueFrom:
+               secretKeyRef:
+                 name: py-block3-secret
+                 key: APP_SECRET_TOKEN
          startupProbe:
            httpGet:
              path: /health

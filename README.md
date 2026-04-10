@@ -49,6 +49,12 @@
 - Practice verifying live Pod env-var values with kubectl exec <pod-name> -- printenv
 - Apply a changed ConfigMap and observe that env-var changes do not refresh automatically in running Pods
 - Extend the validation script to accept a 'restart' argument that restarts the Deployment so new Pods pick up ConfigMap env changes
+- Practice building a Secret manifest to store sensitive environment variables used by the py-block3 Deployment
+- Edit the py-block3 Deployment manifest to add a Secret-backed env var with explicit secretKeyRef mapping
+- Extend the validation script to apply the py-block3 Secret before validating the Deployment
+- Practice verifying that the Secret-backed env var is present in a running Pod
+- Purposely break the Secret key reference and observe CreateContainerConfigError in Pod details
+- Refine the validation script logs section so failure diagnostics continue when the container never starts
 
 ## Contents
 - notes.txt
@@ -73,6 +79,7 @@
 - k8s/py-block3-deployment.yaml
 - k8s/py-block3-service.yaml
 - k8s/py-block3-configmap.yaml
+- k8s/py-block3-secret.yaml
 
 ## What I Practiced
 - git init
@@ -131,6 +138,8 @@
 - kubectl describe configmap <configmap-name>
 - kubectl exec <pod-name> -- printenv
 - kubectl rollout restart deployment/<deployment-name>
+- kubectl get secrets
+- kubectl describe secret <secret-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -151,4 +160,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Move sensitive app configuration out of the Deployment and into a Kubernetes Secret
+- Move the py-block3 workload into a dedicated Kubernetes namespace and update manifests accordingly

@@ -4,12 +4,13 @@ set -euo pipefail
 arg="${1:-}"
 
 kubectl apply -f ~/devops-git-lab/git-block1/k8s/py-block3-configmap.yaml
+kubectl apply -f ~/devops-git-lab/git-block1/k8s/py-block3-secret.yaml
 kubectl apply -f ~/devops-git-lab/git-block1/k8s/py-block3-service.yaml
 kubectl apply -f ~/devops-git-lab/git-block1/k8s/py-block3-deployment.yaml
 
 timeout="60s"
 
-if [  "$arg" = "restart"  ]; then
+if [ "$arg" = "restart" ]; then
   kubectl rollout restart deployment/py-block3-deployment
   timeout="120s"
 fi
@@ -34,7 +35,11 @@ else
   done
 
   printf '\n=== Pods logs ===\n'
-  kubectl logs -l app=py-block3 --tail=5 --prefix=true
+  if  kubectl logs -l app=py-block3 --tail=5 --prefix=true; then
+    :
+  else
+    printf 'Could not fetch logs\n'
+  fi
 
   printf '\n=== Recent Deployment Warning events ===\n'
   kubectl events --for deployment/py-block3-deployment --types=Warning
