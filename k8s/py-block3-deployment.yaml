@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: py-block3-deployment
-
+  namespace: py-block3-namespace
 spec:
   replicas: 2
   selector:
@@ -13,54 +13,61 @@ spec:
       labels:
         app: py-block3
     spec:
-       containers:
-       - name: py-block3-container
-         image: git-block1-py-block3
-         imagePullPolicy: Never
-         ports:
-         - containerPort: 5000
-         env:
-           - name: APP_ENV
-             valueFrom:
-               configMapKeyRef:
-                 name: py-block3-configmap
-                 key: APP_ENV
-           - name: APP_VERSION
-             valueFrom:
-               configMapKeyRef:
-                 name: py-block3-configmap
-                 key: APP_VERSION
-           - name: STARTUP_DELAY
-             valueFrom:
-               configMapKeyRef:
-                 name: py-block3-configmap
-                 key: STARTUP_DELAY
-           - name: APP_SECRET_TOKEN
-             valueFrom:
-               secretKeyRef:
-                 name: py-block3-secret
-                 key: APP_SECRET_TOKEN
-         startupProbe:
-           httpGet:
-             path: /health
-             port: 5000
-           periodSeconds: 5
-           failureThreshold: 8
-         readinessProbe:
-           httpGet:
-             path: /health
-             port: 5000
-           initialDelaySeconds: 5
-           periodSeconds: 5
-           timeoutSeconds: 1
-           failureThreshold: 2
-           successThreshold: 1
-         livenessProbe:
-           httpGet:
-             path: /health
-             port: 5000
-           initialDelaySeconds: 5
-           periodSeconds: 5
-           timeoutSeconds: 3
-           failureThreshold: 3
-           successThreshold: 1
+      containers:
+      - name: py-block3-container
+        image: git-block1-py-block3
+        imagePullPolicy: Never
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 5000
+        env:
+          - name: APP_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: py-block3-configmap
+                key: APP_ENV
+          - name: APP_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: py-block3-configmap
+                key: APP_VERSION
+          - name: STARTUP_DELAY
+            valueFrom:
+              configMapKeyRef:
+                name: py-block3-configmap
+                key: STARTUP_DELAY
+          - name: APP_SECRET_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: py-block3-secret
+                key: APP_SECRET_TOKEN
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          periodSeconds: 5
+          failureThreshold: 8
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 2
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1

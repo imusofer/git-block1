@@ -55,6 +55,12 @@
 - Practice verifying that the Secret-backed env var is present in a running Pod
 - Purposely break the Secret key reference and observe CreateContainerConfigError in Pod details
 - Refine the validation script logs section so failure diagnostics continue when the container never starts
+- Practice building a Namespace manifest for the py-block3 workload
+- Move the py-block3 ConfigMap, Secret, Service, and Deployment manifests into a dedicated Kubernetes namespace
+- Refine the validation script so rollout validation and diagnostics target the correct namespace
+- Add CPU and memory requests and limits to the py-block3 container and verify them in Pod details
+- Purposely raise memory request and limit to an unschedulable value and observe FailedScheduling due to insufficient memory
+- Extend the validation script to apply the Namespace manifest, before applying the other manifests, so the namespaced workload can be recreated from scratch
 
 ## Contents
 - notes.txt
@@ -80,6 +86,7 @@
 - k8s/py-block3-service.yaml
 - k8s/py-block3-configmap.yaml
 - k8s/py-block3-secret.yaml
+- k8s/py-block3-namespace.yaml
 
 ## What I Practiced
 - git init
@@ -140,6 +147,8 @@
 - kubectl rollout restart deployment/<deployment-name>
 - kubectl get secrets
 - kubectl describe secret <secret-name>
+- kubectl get namespaces
+- kubectl describe node <node-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -160,4 +169,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Move the py-block3 workload into a dedicated Kubernetes namespace and update manifests accordingly
+- Move the py-block3 workload into a dedicated Kubernetes namespace and update manifests accordinglyExtend the validation script to apply the Namespace manifest so the namespaced workload can be recreated from scratch
