@@ -61,6 +61,12 @@
 - Add CPU and memory requests and limits to the py-block3 container and verify them in Pod details
 - Purposely raise memory request and limit to an unschedulable value and observe FailedScheduling due to insufficient memory
 - Extend the validation script to apply the Namespace manifest, before applying the other manifests, so the namespaced workload can be recreated from scratch
+- Practice inspecting rollout history
+- Practice inspecting a specific rollout revision
+- Practice pausing rollout, making changes to the Deployment manifest, applying it, and inspecting rollout pause behavior
+- Practice resuming rollout, inspecting rollout status and verifying whether live Pod state matches the edited Deployment manifest state
+- Practice rolling back to an exact previous revision and verifying live Pod state
+- Practice rolling back to the previous revision and verifying live Pod state
 
 ## Contents
 - notes.txt
@@ -149,6 +155,12 @@
 - kubectl describe secret <secret-name>
 - kubectl get namespaces
 - kubectl describe node <node-name>
+- kubectl rollout history deployment/<deployment-name> -n <namespace-name>
+- kubectl rollout history deployment/<deployment-name> --revision=<n> -n <namespace-name>
+- kubectl rollout pause deployment/<deployment-name> -n <namespace-name>
+- kubectl rollout resume deployment/<deployment-name> -n <namespace-name>
+- kubectl rollout undo deployment/<deployment-name> --to-revision=<n> -n <namespace-name>
+- kubectl rollout undo deployment/<deployment-name> -n <namespace-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -169,4 +181,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Move the py-block3 workload into a dedicated Kubernetes namespace and update manifests accordinglyExtend the validation script to apply the Namespace manifest so the namespaced workload can be recreated from scratch
+- Route external traffic to the py-block3 workload through a Kubernetes Ingress and debug the full request path from Ingress to Service to Pod
