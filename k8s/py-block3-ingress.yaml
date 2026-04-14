@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: py-block3-ingress
+  namespace: py-block3-namespace
+spec:
+  ingressClassName: cloud-provider-kind
+  rules:
+  - host: py-block3.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: py-block3-service
+            port:
+              number: 5000

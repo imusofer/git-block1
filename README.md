@@ -67,6 +67,14 @@
 - Practice resuming rollout, inspecting rollout status and verifying whether live Pod state matches the edited Deployment manifest state
 - Practice rolling back to an exact previous revision and verifying live Pod state
 - Practice rolling back to the previous revision and verifying live Pod state
+- Practice verifying whether an ingress path exists
+- Practice installing and running `cloud-provider-kind`
+- Practice creating an Ingress manifest for the `py-block3` workload
+- Verified live traffic through the Ingress address by curling `172.18.0.3/`
+- Extended the Ingress manifest with a `host` field and validated host-based routing via `curl -v -H "Host: py-block3.local" 172.18.0.3`
+- Debugged incorrect YAML where `host` and `http` were split into separate rule items
+- Modified the Ingress manifest's `path` field to `/health` and validated path-based routing via `curl 172.18.0.3/health`
+- Observed `404 Not Found` for unmatched host/path while the entry point itself remained reachable
 
 ## Contents
 - notes.txt
@@ -93,6 +101,7 @@
 - k8s/py-block3-configmap.yaml
 - k8s/py-block3-secret.yaml
 - k8s/py-block3-namespace.yaml
+- k8s/py-block3-ingress.yaml
 
 ## What I Practiced
 - git init
@@ -130,8 +139,8 @@
 - Check Pod status - kubectl get pod
 - Get Pods that match app label - kubectl get pods -l app=<app-label>
 - Check Deployment status - kubectl get deployments
-- Inspect in depth information of the deployment - kubectl describe deployment <deployment-name>
-- Inspect in-depth information of the pod - kubectl describe pod <pod-name>
+- Inspect in depth information of the Deployment - kubectl describe deployment <deployment-name>
+- Inspect in-depth information of the Pod - kubectl describe pod <pod-name>
 - Inspect Pod logs - kubectl logs <pod-name>
 - Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
 - Running a one-off Job from a suspended CronJob manifest - kubectl create job <manual-job-name> --from=cronjob/<cronjob-name>
@@ -161,6 +170,9 @@
 - kubectl rollout resume deployment/<deployment-name> -n <namespace-name>
 - kubectl rollout undo deployment/<deployment-name> --to-revision=<n> -n <namespace-name>
 - kubectl rollout undo deployment/<deployment-name> -n <namespace-name>
+- kubectl get ingressclass
+- kubectl get ingress -n <namespace-name>
+- kubectl describe ingress -n <namespace-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -181,4 +193,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Route external traffic to the py-block3 workload through a Kubernetes Ingress and debug the full request path from Ingress to Service to Pod
+- Enabling autoscaling for `py-block3`: prepare Metrics Server, create an HPA, generate load, observe scaling behavior, and troubleshoot non-scaling scenarios.
