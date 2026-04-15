@@ -75,6 +75,15 @@
 - Debugged incorrect YAML where `host` and `http` were split into separate rule items
 - Modified the Ingress manifest's `path` field to `/health` and validated path-based routing via `curl 172.18.0.3/health`
 - Observed `404 Not Found` for unmatched host/path while the entry point itself remained reachable
+- Practice verifying whether the Metrics API is available
+- Practice installing the Metrics Server
+- Practice fixing the kubelet TLS scrape failure with `--kubelet-insecure-tls`
+- Practice creating a Kubernetes HPA manifest for the `py-block3` workload
+- Observed initial HPA metric lag (`<unknown>`)
+- Practice generating a sustained load and observe Replicas scale from 2 to 5
+- Observe scale-down stabilization delay (300 seconds)
+- Observe scale-down back to `minReplicas 2`
+- Increase CPU request from `100m` to `500m` and verify the same load pattern no longer crosses the HPA target and doesn't scale out
 
 ## Contents
 - notes.txt
@@ -102,6 +111,7 @@
 - k8s/py-block3-secret.yaml
 - k8s/py-block3-namespace.yaml
 - k8s/py-block3-ingress.yaml
+- k8s/py-block3-hpa.yaml
 
 ## What I Practiced
 - git init
@@ -139,7 +149,7 @@
 - Check Pod status - kubectl get pod
 - Get Pods that match app label - kubectl get pods -l app=<app-label>
 - Check Deployment status - kubectl get deployments
-- Inspect in depth information of the Deployment - kubectl describe deployment <deployment-name>
+- Inspect in-depth information of the Deployment - kubectl describe deployment <deployment-name>
 - Inspect in-depth information of the Pod - kubectl describe pod <pod-name>
 - Inspect Pod logs - kubectl logs <pod-name>
 - Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
@@ -173,6 +183,10 @@
 - kubectl get ingressclass
 - kubectl get ingress -n <namespace-name>
 - kubectl describe ingress -n <namespace-name>
+- kubectl top pods -n <namespace-name>
+- kubectl top nodes
+- kubectl get apiservices
+- KUBE_EDITOR=nano kubectl edit deployment <deployment-name> -n <namespace-name>
 
 ## Manual Validation
 - Checked repo state with git status
@@ -193,4 +207,4 @@
 - Verified Docker runs the containerized script successfully
 
 ## Next Automation Step
-- Enabling autoscaling for `py-block3`: prepare Metrics Server, create an HPA, generate load, observe scaling behavior, and troubleshoot non-scaling scenarios.
+- Packaging the existing `py-block3` workload into a Helm chart, templating the Deployment, Service, Ingress, and HPA configuration, and validating installs and upgrades through values-driven changes
