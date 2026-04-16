@@ -1,0 +1,59 @@
+replicaCount: 2
+
+image:
+  repository: git-block1-py-block3
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 5000
+
+ingress:
+  enabled: true
+  className: "cloud-provider-kind"
+  host: py-block3.local
+  path: /
+  pathType: Prefix
+
+resources:
+    limits:
+       cpu: 200m
+       memory: 256Mi
+    requests:
+       cpu: 100m
+       memory: 128Mi
+
+startupProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  periodSeconds: 5
+  failureThreshold: 8
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 2
+  successThreshold: 1
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  averageCPUUtilization: 50
+
+externalRefs:
+  configMapName: py-block3-configmap
+  secretName: py-block3-secret

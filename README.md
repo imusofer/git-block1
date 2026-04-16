@@ -80,10 +80,20 @@
 - Practice fixing the kubelet TLS scrape failure with `--kubelet-insecure-tls`
 - Practice creating a Kubernetes HPA manifest for the `py-block3` workload
 - Observed initial HPA metric lag (`<unknown>`)
-- Practice generating a sustained load and observe Replicas scale from 2 to 5
+- Practice generating sustained load and observe replicas scale from 2 to 5
 - Observe scale-down stabilization delay (300 seconds)
-- Observe scale-down back to `minReplicas 2`
+- Observe scale-down back to `minReplicas: 2`
 - Increase CPU request from `100m` to `500m` and verify the same load pattern no longer crosses the HPA target and doesn't scale out
+- Practice creating a Helm chart scaffold for the `py-block3` workload
+- Practice removing unnecessary Helm starter chart files and keeping only the templates relevant to the workload
+- Practice templating the `py-block3` Deployment, Service, Ingress, and HPA manifests into a Helm chart
+- Practice aligning Helm-rendered object names with the existing live workload names
+- Practice aligning Helm selector labels with the existing live workload selector model (`app: py-block3`)
+- Practice rendering and linting the Helm chart before installation
+- Practice adopting existing Kubernetes resources into a Helm release
+- Observe Helm installation failure due to missing ownership metadata on existing resources
+- Practice resolving Helm ownership and server-side apply conflicts during workload adoption
+- Practice validating values-driven Helm upgrades by changing and resetting HPA configuration
 
 ## Contents
 - notes.txt
@@ -112,6 +122,14 @@
 - k8s/py-block3-namespace.yaml
 - k8s/py-block3-ingress.yaml
 - k8s/py-block3-hpa.yaml
+- helm/py-block3/Chart.yaml
+- helm/py-block3/values.yaml
+- helm/py-block3/.helmignore
+- helm/py-block3/templates/_helpers.tpl
+- helm/py-block3/templates/deployment.yaml
+- helm/py-block3/templates/service.yaml
+- helm/py-block3/templates/hpa.yaml
+- helm/py-block3/templates/ingress.yaml
 
 ## What I Practiced
 - git init
@@ -187,24 +205,33 @@
 - kubectl top nodes
 - kubectl get apiservices
 - KUBE_EDITOR=nano kubectl edit deployment <deployment-name> -n <namespace-name>
+- helm version
+- helm create <chart-path>
+- helm lint <chart-path>
+- helm template <release-name> <chart-path>
+- helm install <release-name> <chart-path> -n <namespace-name> --dry-run=client --debug
+- helm list -n <namespace-name> --pending --failed --uninstalling
+- helm status <release-name> -n <namespace-name>
+- helm history <release-name> -n <namespace-name>
+- helm install <release-name> <chart-path> -n <namespace-name> --take-ownership
+- helm upgrade --install <release-name> <chart-path> -n <namespace-name> --take-ownership --force-conflicts --wait
+- helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set hpa.maxReplicas=<n> --force-conflicts --wait
+- helm upgrade <release-name> <chart-path> -n <namespace-name> --reset-values --force-conflicts --wait
+- helm get values <release-name> -n <namespace-name>
 
-## Manual Validation
-- Checked repo state with git status
-- Checked commit history with git log
-- Verified ignore behavior with .gitignore
-- Verified tracked vs ignored behavior with keep.log
-- Verified added tag to a commit
-- Verified changes before and after staging
-- Verified current directory, repo files and README.md contents
-- Verified README, .gitignore and workflow exist
-- Verified README contains project heading
-- Verified repo docs and file quality
-- Verified documentation accuracy
-- Verified Python script functionality
-- Verified second Python script reads statuses from file
-- Verified containerized Python script runs successfully and prints the expected output
-- Verified Docker image builds successfully
-- Verified Docker runs the containerized script successfully
+## Repo Check Verification
+- Verified the repository can be checked out in GitHub Actions
+- Verified the workflow prints the current working directory
+- Verified the workflow lists repository files
+- Verified the workflow prints the README contents
+- Verified `.github/workflows/repo-check.yml` exists
+- Verified `README.md` contains the project header `# Git Block 1 Lab`
+- Verified `README.md` and `.gitignore` exist via `scripts/script.sh`
+- Verified `scripts/py-block1.py` accepts the `learning` status
+- Verified `scripts/py-block1.py` accepts the `review` status
+- Verified `scripts/py-block2.py` reads statuses from a text file
+- Verified the Docker image builds successfully
+- Verified the Docker image runs successfully
 
 ## Next Automation Step
-- Packaging the existing `py-block3` workload into a Helm chart, templating the Deployment, Service, Ingress, and HPA configuration, and validating installs and upgrades through values-driven changes
+- Validate the `py-block3` Helm chart in a pipeline-style workflow: lint the chart, render manifests, validate upgrade behavior, and add rollout and health checks that fail fast when charted Kubernetes changes are broken.

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: py-block3
+description: A Helm chart for the py-block3 workload
+
+type: application
+
+version: 0.1.0
+
+appVersion: "v2"
