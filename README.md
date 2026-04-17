@@ -1,99 +1,18 @@
 # Git Block 1 Lab
 
 ## Purpose
-- Practice core Git fundamentals
-- Understand file states and commit flow
-- Build cleaner repo habits
-- Understand CI/CD practices by creating a GitHub Actions workflow
-- Practice repo quality cleanup habits
-- Practice Python automation scripting
-- Practice building a Docker image and running a Docker container
-- Practice building a Kubernetes Pod manifest
-- Practice loading a Docker image to use for Kubernetes Pod manifest
-- Practice running a Kubernetes Pod manifest from loaded Docker image
-- Practice inspecting Pod status and history logs
-- Practice inspecting cluster name
-- Practice building a Kubernetes Deployment manifest
-- Practice running a Kubernetes Deployment manifest
-- Practice building and running a Kubernetes Job manifest
-- Practice building and running a Kubernetes CronJob manifest
-- Practice suspending and resuming a Kubernetes CronJob manifest
-- Practice running a one-off Job from a suspended Kubernetes CronJob manifest
-- Practice creating a failing Job and verify failure behavior
-- Practice building a long-running Flask HTTP app with 4 route handlers
-- Practice containerizing the long-running app and verify it runs successfully
-- Practice sequencing Dockerfile layers for efficiency
-- Practice running the long-running app in detached mode and inspect it operationally
-- Practice building and running a Kubernetes Deployment manifest for the long-running app
-- Practice building and running a Kubernetes Service manifest for the long-running app deployment
-- Practice scaling deployment and verifying service scales with it
-- Practice updating Deployment config and verifying a rolling update
-- Practice adding readiness and liveness probes to Deployment manifest
-- Practice simulating a readiness probe failure and observing Pod and Service behavior
-- Practice simulating a liveness probe failure and observing Deployment and Pod behavior
-- Practice restoring readiness and liveness probes to a healthy state and observing Pod and Deployment behavior
-- Add a configurable startup delay behavior to the Flask app
-- Edit the Dockerfile and build a new Docker image to reflect the changes made to the Flask app
-- Add a STARTUP_DELAY environment variable to the Kubernetes Deployment manifest
-- Observed Deployment and Pod behavior when startup delay exceeded readiness and liveness probe thresholds
-- Practice adding a startup probe to the Deployment manifest and observing how the Deployment and Pods behave during slow application startup
-- Build a script that validates the py-block3 workload by applying the Service and Deployment manifests, waiting for rollout completion, and listing Pods filtered by the Flask app label.
-- Add a failure path to the validation script and observe script behavior after purposely breaking the rollout health
-- Extend the validation script to show recent Pod logs for the py-block3 workload when rollout validation fails
-- Extend the validation script to print recent Kubernetes events for the py-block3 workload when rollout validation fails
-- Refine the validation script to print only Warning Pod events when rollout validation fails
-- Refine the validation script to print only Warning Deployment events when rollout validation fails
-- Refine the validation script to label diagnostic sections more clearly when rollout validation fails
-- Practice building a ConfigMap manifest to store environment variables used in the py-block3 Deployment
-- Edit the py-block3 Deployment manifest to replace inline env-var values with explicit configMapKeyRef mappings
-- Practice verifying live Pod env-var values with kubectl exec <pod-name> -- printenv
-- Apply a changed ConfigMap and observe that env-var changes do not refresh automatically in running Pods
-- Extend the validation script to accept a 'restart' argument that restarts the Deployment so new Pods pick up ConfigMap env changes
-- Practice building a Secret manifest to store sensitive environment variables used by the py-block3 Deployment
-- Edit the py-block3 Deployment manifest to add a Secret-backed env var with explicit secretKeyRef mapping
-- Extend the validation script to apply the py-block3 Secret before validating the Deployment
-- Practice verifying that the Secret-backed env var is present in a running Pod
-- Purposely break the Secret key reference and observe CreateContainerConfigError in Pod details
-- Refine the validation script logs section so failure diagnostics continue when the container never starts
-- Practice building a Namespace manifest for the py-block3 workload
-- Move the py-block3 ConfigMap, Secret, Service, and Deployment manifests into a dedicated Kubernetes namespace
-- Refine the validation script so rollout validation and diagnostics target the correct namespace
-- Add CPU and memory requests and limits to the py-block3 container and verify them in Pod details
-- Purposely raise memory request and limit to an unschedulable value and observe FailedScheduling due to insufficient memory
-- Extend the validation script to apply the Namespace manifest, before applying the other manifests, so the namespaced workload can be recreated from scratch
-- Practice inspecting rollout history
-- Practice inspecting a specific rollout revision
-- Practice pausing rollout, making changes to the Deployment manifest, applying it, and inspecting rollout pause behavior
-- Practice resuming rollout, inspecting rollout status and verifying whether live Pod state matches the edited Deployment manifest state
-- Practice rolling back to an exact previous revision and verifying live Pod state
-- Practice rolling back to the previous revision and verifying live Pod state
-- Practice verifying whether an ingress path exists
-- Practice installing and running `cloud-provider-kind`
-- Practice creating an Ingress manifest for the `py-block3` workload
-- Verified live traffic through the Ingress address by curling `172.18.0.3/`
-- Extended the Ingress manifest with a `host` field and validated host-based routing via `curl -v -H "Host: py-block3.local" 172.18.0.3`
-- Debugged incorrect YAML where `host` and `http` were split into separate rule items
-- Modified the Ingress manifest's `path` field to `/health` and validated path-based routing via `curl 172.18.0.3/health`
-- Observed `404 Not Found` for unmatched host/path while the entry point itself remained reachable
-- Practice verifying whether the Metrics API is available
-- Practice installing the Metrics Server
-- Practice fixing the kubelet TLS scrape failure with `--kubelet-insecure-tls`
-- Practice creating a Kubernetes HPA manifest for the `py-block3` workload
-- Observed initial HPA metric lag (`<unknown>`)
-- Practice generating sustained load and observe replicas scale from 2 to 5
-- Observe scale-down stabilization delay (300 seconds)
-- Observe scale-down back to `minReplicas: 2`
-- Increase CPU request from `100m` to `500m` and verify the same load pattern no longer crosses the HPA target and doesn't scale out
-- Practice creating a Helm chart scaffold for the `py-block3` workload
-- Practice removing unnecessary Helm starter chart files and keeping only the templates relevant to the workload
-- Practice templating the `py-block3` Deployment, Service, Ingress, and HPA manifests into a Helm chart
-- Practice aligning Helm-rendered object names with the existing live workload names
-- Practice aligning Helm selector labels with the existing live workload selector model (`app: py-block3`)
-- Practice rendering and linting the Helm chart before installation
-- Practice adopting existing Kubernetes resources into a Helm release
-- Observe Helm installation failure due to missing ownership metadata on existing resources
-- Practice resolving Helm ownership and server-side apply conflicts during workload adoption
-- Practice validating values-driven Helm upgrades by changing and resetting HPA configuration
+- Practice core Git fundamentals and cleaner repository habits
+- Build small Python automation scripts and file-based input handling
+- Containerize Python workloads with Docker and validate runtime behavior
+- Build and operate Kubernetes Pod, Deployment, Job, and CronJob workloads on kind
+- Expose and operate a Flask workload through Service, probes, ConfigMap, Secret, and Namespace resources
+- Practice rollout validation, rollout history, rollback behavior, and failure diagnostics
+- Expose the workload through Ingress and validate host/path routing behavior
+- Add autoscaling with HPA and observe scale-out and scale-in behavior under load
+- Package the workload into a Helm chart and adopt an existing live workload into a Helm release
+- Validate values-driven Helm upgrades and release state through Helm
+- Build pipeline-style GitHub Actions validation for Helm lint, render, install, and upgrade behavior
+- Add negative rollout testing, recovery validation, and failure-only diagnostics in CI
 
 ## Contents
 - notes.txt
@@ -106,6 +25,7 @@
 - scripts/py-block1.py
 - scripts/py-block2.py
 - scripts/validate-py-block3-deployment.sh
+- scripts/verify-py-block3-deployment.sh
 - Dockerfile
 - data/statuses.txt
 - .dockerignore
@@ -215,9 +135,23 @@
 - helm history <release-name> -n <namespace-name>
 - helm install <release-name> <chart-path> -n <namespace-name> --take-ownership
 - helm upgrade --install <release-name> <chart-path> -n <namespace-name> --take-ownership --force-conflicts --wait
-- helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set hpa.maxReplicas=<n> --force-conflicts --wait
-- helm upgrade <release-name> <chart-path> -n <namespace-name> --reset-values --force-conflicts --wait
+- helm upgrade --install <release-name> <chart-path> -n <namespace-name> --wait --timeout=<duration>
+- helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set hpa.maxReplicas=<n> --wait --timeout=<duration>
+- helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set image.repository=<value> --wait --timeout=<duration>
 - helm get values <release-name> -n <namespace-name>
+- GitHub Actions multi-line `run: |` blocks
+- GitHub Actions `uses:` action steps
+- GitHub Actions failure-only step conditions - `if: ${{ failure() }}`
+- Bash strict mode in workflow steps - `set -euo pipefail`
+- kind cluster creation in GitHub Actions - `uses: helm/kind-action@v1`
+- Build app image for CI cluster validation - `docker build -t <image-name> app/`
+- Load Docker image into kind - `kind load docker-image <image-name> --name <cluster-name>`
+- Helm install/upgrade validation in CI - `helm upgrade --install <release-name> <chart-path> -n <namespace-name> --wait --timeout=<duration>`
+- Helm upgrade validation with reused values - `helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set <key>=<value> --wait --timeout=<duration>`
+- Verify live HPA spec field with JSONPath - `kubectl get hpa <hpa-name> -n <namespace-name> -o jsonpath='{.spec.maxReplicas}'`
+- Verify exact command output with `grep -x`
+- Negative rollout testing in Bash - `if <broken-command>; then ... exit 1; fi`
+- Failure-safe diagnostics in CI - `<command> || true`
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -232,6 +166,22 @@
 - Verified `scripts/py-block2.py` reads statuses from a text file
 - Verified the Docker image builds successfully
 - Verified the Docker image runs successfully
+- Verified the Helm chart lints successfully in GitHub Actions
+- Verified the Helm chart renders successfully in GitHub Actions
+- Verified a temporary kind cluster is created in GitHub Actions
+- Verified the `py-block3` image builds successfully for CI cluster validation
+- Verified the `py-block3` image loads successfully into the kind cluster
+- Verified the `py-block3` namespace, ConfigMap, and Secret are applied before Helm validation
+- Verified the Helm release installs successfully into the CI cluster
+- Verified the original `validate-py-block3-deployment.sh` script remains in the repository as the earlier manifest-based validator
+- Verified the `verify-py-block3-deployment.sh` script confirms rollout health after Helm installation in CI
+- Verified a Helm upgrade changes `hpa.maxReplicas` from the workflow
+- Verified the live HPA spec reflects the upgraded `maxReplicas` value
+- Verified the Helm release remains in `STATUS: deployed` after upgrade
+- Verified the Helm release advances to `REVISION: 2` after upgrade
+- Verified an intentionally broken image upgrade fails fast in CI
+- Verified the Helm release can be restored to a healthy image value after the negative test
+- Verified failure-only diagnostics print Kubernetes and Helm state when the workflow fails
 
 ## Next Automation Step
-- Validate the `py-block3` Helm chart in a pipeline-style workflow: lint the chart, render manifests, validate upgrade behavior, and add rollout and health checks that fail fast when charted Kubernetes changes are broken.
+- Break-Fix Block 1: introduce purposefully broken Helm and rollout scenarios, troubleshoot them from symptoms, and recover the release using operator-style debugging.

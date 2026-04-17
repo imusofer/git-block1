@@ -43,3 +43,54 @@ jobs:
 
       - name: Verify Docker image runs successfully
         run: docker run --rm git-block1-py-block2
+
+      - name: Verify Helm workload lints and renders successfully
+        shell: bash
+        run: |
+          set -euo pipefail
+          helm lint helm/py-block3
+          helm template py-block3 helm/py-block3 -n py-block3-namespace
+
+      - name: Create ephemeral kind cluster
+        uses: helm/kind-action@v1
+
+      - name: Verify Helm workload applies to a Kubernetes cluster and is healthy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker build -t git-block1-py-block3 app/
+
+          kind load docker-image git-block1-py-block3 --name chart-testing
+
+          kubectl apply -f k8s/py-block3-namespace.yaml
+          kubectl apply -f k8s/py-block3-configmap.yaml
+          kubectl apply -f k8s/py-block3-secret.yaml
+
+          helm upgrade --install py-block3 helm/py-block3 -n py-block3-namespace --wait --timeout=60s
+          ./scripts/verify-py-block3-deployment.sh
+
+          helm upgrade py-block3 helm/py-block3 -n py-block3-namespace --reuse-values --set hpa.maxReplicas=6 --wait --timeout=60s
+
+          kubectl get hpa py-block3-hpa -n py-block3-namespace -o jsonpath='{.spec.maxReplicas}' | grep -x '6'
+
+          ./scripts/verify-py-block3-deployment.sh
+
+          helm status py-block3 -n py-block3-namespace | grep -x 'STATUS: deployed'
+          helm status py-block3 -n py-block3-namespace | grep -x 'REVISION: 2'
+
+          if helm upgrade py-block3 helm/py-block3 -n py-block3-namespace --reuse-values --set image.repository=definitely-bad-image --wait --timeout=30s; then
+            echo "Broken upgrade unexpectedly succeeded"
+            exit 1
+          fi
+
+          helm upgrade py-block3 helm/py-block3 -n py-block3-namespace --reuse-values --set image.repository=git-block1-py-block3 --wait --timeout=60s
+          ./scripts/verify-py-block3-deployment.sh
+
+      - name: Show py-block3 diagnostics on failure
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          kubectl get all -n py-block3-namespace || true
+          kubectl describe deployment py-block3-deployment -n py-block3-namespace || true
+          helm status py-block3 -n py-block3-namespace || true
