@@ -13,6 +13,7 @@
 - Validate values-driven Helm upgrades and release state through Helm
 - Build pipeline-style GitHub Actions validation for Helm lint, render, install, and upgrade behavior
 - Add negative rollout testing, recovery validation, and failure-only diagnostics in CI
+- Practice operator-style break/fix troubleshooting and Helm-based recovery across multiple rollout failure layers
 
 ## Contents
 - notes.txt
@@ -152,6 +153,13 @@
 - Verify exact command output with `grep -x`
 - Negative rollout testing in Bash - `if <broken-command>; then ... exit 1; fi`
 - Failure-safe diagnostics in CI - `<command> || true`
+- Diagnose Helm-managed rollout failures from Helm status, rollout state, Pod status, events, and logs
+- Recover a failed Helm release with `helm upgrade --reset-values --force-conflicts --wait --timeout=<duration>`
+- Distinguish rollout failure layers: image pull, startup probe, missing Secret, unschedulable Pod, and missing ConfigMap
+- Identify `ErrImageNeverPull` from Pod details and Events
+- Identify startup probe failure from Pod details and Events
+- Identify `CreateContainerConfigError` from missing Secret or ConfigMap references
+- Identify `FailedScheduling` due to insufficient memory from Pod scheduler events
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -184,4 +192,4 @@
 - Verified failure-only diagnostics print Kubernetes and Helm state when the workflow fails
 
 ## Next Automation Step
-- Break-Fix Block 1: introduce purposefully broken Helm and rollout scenarios, troubleshoot them from symptoms, and recover the release using operator-style debugging.
+- Terraform Block 1: build core IaC workflow and remote state foundations in Azure with cost-conscious resource handling and destroy discipline.
