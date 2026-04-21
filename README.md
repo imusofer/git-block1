@@ -16,6 +16,8 @@
 - Practice operator-style break/fix troubleshooting and Helm-based recovery across multiple rollout failure layers
 - Build the smallest valid Azure Terraform project with local state, one Resource Group, input variables, and an output
 - Practice Terraform init, validate, plan, apply, destroy, local state inspection, and basic Terraform repo hygiene
+- Build a low-cost Azure container delivery foundation with a Resource Group and Azure Container Registry
+- Practice Azure CLI registry creation, Azure identity-based ACR login, image push/pull validation, and destroy discipline
 
 ## Contents
 - notes.txt
@@ -181,6 +183,27 @@
 - Distinguish current state from backup state
 - Identify local Terraform working artifacts: `.terraform/`, `terraform.tfstate`, `terraform.tfstate.backup`, `terraform.tfvars`
 - Terraform repo hygiene with `.gitignore`
+- `az account show --output table`
+- `az group create --name <resource-group-name> --location <azure-region>`
+- `az group show --name <resource-group-name> --output table`
+- `az group list`
+- `az group delete --name <resource-group-name> --yes`
+- `az acr create --resource-group <resource-group-name> --name <acr-name> --sku Basic`
+- `az acr show --name <acr-name> --query <property> --output tsv`
+- `az acr login -n <acr-name>`
+- Distinguish Azure Container Registry resource name vs login server
+- Distinguish ACR repository vs image tag
+- Verify ACR Basic as the cheapest sensible registry SKU for the lab
+- Tag a local image for ACR with `<login-server>/<repository>:<tag>`
+- `docker tag <local-image>:<tag> <login-server>/<repository>:<tag>`
+- `docker push <login-server>/<repository>:<tag>`
+- `az acr repository list --name <acr-name> --output table`
+- `az acr repository show-tags --name <acr-name> --repository <repository> --output table`
+- Remove a local ACR-qualified image reference with `docker image remove <image-ref>`
+- Pull an image from ACR with `docker pull <login-server>/<repository>:<tag>`
+- Verify a repository is created on first successful push
+- Validate image pull from ACR after removing the local ACR-qualified image reference
+- Destroy Azure lab resources cleanly by deleting the whole Resource Group
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -213,4 +236,4 @@
 - Verified failure-only diagnostics print Kubernetes and Helm state when the workflow fails
 
 ## Next Automation Step
-- Azure Block 1: build the container delivery foundation in Azure with low-cost resource choices, registry/auth flow awareness, and strict destroy discipline
+- CI/CD Block 3: build pipeline-driven image tagging and push flow to Azure Container Registry with release metadata and verification gates
