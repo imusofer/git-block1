@@ -14,6 +14,8 @@
 - Build pipeline-style GitHub Actions validation for Helm lint, render, install, and upgrade behavior
 - Add negative rollout testing, recovery validation, and failure-only diagnostics in CI
 - Practice operator-style break/fix troubleshooting and Helm-based recovery across multiple rollout failure layers
+- Build the smallest valid Azure Terraform project with local state, one Resource Group, input variables, and an output
+- Practice Terraform init, validate, plan, apply, destroy, local state inspection, and basic Terraform repo hygiene
 
 ## Contents
 - notes.txt
@@ -51,6 +53,8 @@
 - helm/py-block3/templates/service.yaml
 - helm/py-block3/templates/hpa.yaml
 - helm/py-block3/templates/ingress.yaml
+- terraform/main.tf
+- terraform/.terraform.lock.hcl
 
 ## What I Practiced
 - git init
@@ -160,6 +164,23 @@
 - Identify startup probe failure from Pod details and Events
 - Identify `CreateContainerConfigError` from missing Secret or ConfigMap references
 - Identify `FailedScheduling` due to insufficient memory from Pod scheduler events
+- Terraform root module structure
+- Terraform `terraform` block and `required_providers`
+- AzureRM provider configuration
+- Terraform input variable blocks
+- Terraform output blocks
+- Resource addressing with `<type>.<name>.<attribute>`
+- `terraform init`
+- `terraform validate`
+- `terraform plan`
+- `terraform apply`
+- `terraform destroy`
+- Move variable values out of `default` and into `terraform.tfvars`
+- Inspect managed resources with `terraform state list`
+- Inspect one managed object with `terraform state show <resource-address>`
+- Distinguish current state from backup state
+- Identify local Terraform working artifacts: `.terraform/`, `terraform.tfstate`, `terraform.tfstate.backup`, `terraform.tfvars`
+- Terraform repo hygiene with `.gitignore`
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -192,4 +213,4 @@
 - Verified failure-only diagnostics print Kubernetes and Helm state when the workflow fails
 
 ## Next Automation Step
-- Terraform Block 1: build core IaC workflow and remote state foundations in Azure with cost-conscious resource handling and destroy discipline.
+- Azure Block 1: build the container delivery foundation in Azure with low-cost resource choices, registry/auth flow awareness, and strict destroy discipline
