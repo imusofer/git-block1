@@ -18,6 +18,7 @@
 - Practice Terraform init, validate, plan, apply, destroy, local state inspection, and basic Terraform repo hygiene
 - Build a low-cost Azure container delivery foundation with a Resource Group and Azure Container Registry
 - Practice Azure CLI registry creation, Azure identity-based ACR login, image push/pull validation, and destroy discipline
+- Build pipeline-driven Azure Container Registry publishing in GitHub Actions with Azure OIDC login, release metadata, registry verification, and manifest digest validation
 
 ## Contents
 - .gitignore
@@ -201,13 +202,30 @@
 - Verify a repository is created on first successful push
 - Validate image pull from ACR after removing the local ACR-qualified image reference
 - Destroy Azure lab resources cleanly by deleting the whole Resource Group
+- GitHub Actions job-level `env:`
+- GitHub Actions job-level `permissions:`
+- GitHub Actions OIDC permission - `id-token: write`
+- GitHub Actions step outputs with `GITHUB_OUTPUT`
+- Build reusable workflow metadata with short SHA, UTC timestamp, image tag, and full image reference
+- Azure Login action with OIDC - `uses: azure/login@v3`
+- Azure CLI session validation in GitHub Actions - `az account show`
+- Azure Container Registry login in CI - `az acr login --name <acr-name>`
+- Build a registry-qualified image directly in CI - `docker build -t <login-server>/<repository>:<tag> app/`
+- Inspect a built image before push - `docker image inspect <image-ref>`
+- Push an image to ACR from GitHub Actions - `docker push <image-ref>`
+- Verify an exact pushed tag exists in ACR - `az acr repository show-tags --name <acr-name> --repository <repository> --output tsv | grep -x <tag>`
+- Query ACR manifest metadata for a pushed tag - `az acr manifest list-metadata -r <acr-name> -n <repository> --query ... -o tsv`
+- Gate a workflow on non-empty manifest digest output - `test -n "<value>"`
+- Export manifest digest as a reusable step output in GitHub Actions
+- Distinguish mutable image tag from immutable image digest
+- Print final image reference, tag, and digest as publish metadata in CI
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
 - Verified the workflow prints the current working directory
 - Verified the workflow lists repository files
 - Verified the workflow prints the README contents
-- Verified `.github/workflows/repo-check.yml` exists
+- Verified `.github/workflows/repo-check.yaml` exists
 - Verified `README.md` contains the project header `# Git Block 1 Lab`
 - Verified `README.md` and `.gitignore` exist via `scripts/script.sh`
 - Verified `scripts/py-block1.py` accepts the `learning` status
@@ -231,6 +249,16 @@
 - Verified an intentionally broken image upgrade fails fast in CI
 - Verified the Helm release can be restored to a healthy image value after the negative test
 - Verified failure-only diagnostics print Kubernetes and Helm state when the workflow fails
+- Verified GitHub Actions computes reusable publish metadata for ACR image tagging
+- Verified Azure OIDC login succeeds in GitHub Actions
+- Verified the workflow authenticates to Azure Container Registry successfully
+- Verified the app image builds with the final registry-qualified image reference
+- Verified the image pushes successfully to ACR from GitHub Actions
+- Verified the exact pushed image tag exists in ACR after push
+- Verified the workflow can retrieve the manifest digest for the pushed tag from ACR
+- Verified the manifest digest gate fails on empty output and passes on a valid pushed artifact
+- Verified the workflow exports reusable image digest metadata through step outputs
+- Verified the workflow prints final image reference, image tag, and image digest after publish verification
 
 ## Next Automation Step
-- CI/CD Block 3: build pipeline-driven image tagging and push flow to Azure Container Registry with release metadata and verification gates
+- Break/Fix Block 2: registry, auth, and pipeline failure scenarios for ACR publishing and image delivery
