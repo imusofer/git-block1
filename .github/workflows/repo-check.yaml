@@ -7,6 +7,13 @@ on:
 jobs:
   repo-check:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: git-block1-py-block3
+      ACR_NAME: acrazblock1
+      ACR_LOGIN_SERVER: acrazblock1.azurecr.io
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -21,7 +28,7 @@ jobs:
         run: cat README.md
 
       - name: Check if workflow exists
-        run: ls .github/workflows/repo-check.yml
+        run: ls .github/workflows/repo-check.yaml
 
       - name: Check if README contains project header
         run: grep "# Git Block 1 Lab" README.md
@@ -94,3 +101,50 @@ jobs:
           kubectl get all -n py-block3-namespace || true
           kubectl describe deployment py-block3-deployment -n py-block3-namespace || true
           helm status py-block3 -n py-block3-namespace || true
+
+      - name: Compute metadata
+        id: meta
+        shell: bash
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          TIMESTAMP="$(date -u +%Y%m%d-%H%M%S)"
+          IMAGE_TAG="${SHORT_SHA}-${TIMESTAMP}"
+          IMAGE_REF="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "timestamp=${TIMESTAMP}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=${IMAGE_REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Show metadata
+        run: |
+          echo "${{ steps.meta.outputs.short_sha}}"
+          echo "${{ steps.meta.outputs.timestamp}}"
+          echo "${{ steps.meta.outputs.image_tag}}"
+          echo "${{ steps.meta.outputs.image_ref}}"
+
+      - name: Azure login
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify Azure session and log in to ACR
+        shell: bash
+        run: |
+          az account show
+          az acr login --name "$ACR_NAME"
+
+      - name: Build and push Docker image to ACR
+        shell: bash
+        run: |
+          IMAGE_REF="${{ steps.meta.outputs.image_ref }}"
+          docker build -t "$IMAGE_REF" app/
+          docker image inspect "$IMAGE_REF"
+          docker push "$IMAGE_REF"
+
+      - name: Verify registry
+        shell: bash
+        run: |
+          IMAGE_TAG="${{ steps.meta.outputs.image_tag }}"
+          az acr repository show-tags -n "$ACR_NAME" --repository "$IMAGE_NAME" --output tsv | grep -x "$IMAGE_TAG"

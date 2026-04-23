@@ -20,12 +20,9 @@
 - Practice Azure CLI registry creation, Azure identity-based ACR login, image push/pull validation, and destroy discipline
 
 ## Contents
-- notes.txt
-- readme.txt
 - .gitignore
 - README.md
-- keep.log
-- .github/workflows/repo-check.yml
+- .github/workflows/repo-check.yaml
 - scripts/script.sh
 - scripts/py-block1.py
 - scripts/py-block2.py
