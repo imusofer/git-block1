@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: git-block1-py-block3
-      ACR_NAME: acrazblock1
+      ACR_NAME: bogusbintedblock1
       ACR_LOGIN_SERVER: acrazblock1.azurecr.io
     permissions:
       id-token: write
