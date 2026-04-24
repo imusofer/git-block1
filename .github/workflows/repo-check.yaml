@@ -159,11 +159,14 @@ jobs:
           DIGEST_VALUE="$(az acr manifest list-metadata -r "$ACR_NAME" -n "$IMAGE_NAME" --query "[?contains(tags, '$IMAGE_TAG')].digest | [0]" -o tsv)"
           test -n "$DIGEST_VALUE"
           echo "$DIGEST_VALUE"
-          echo "digest_value=${BOGUS_VALUE}" >> "$GITHUB_OUTPUT"
+          echo "digest_value=${DIGEST_VALUE}" >> "$GITHUB_OUTPUT"
 
       - name: Show image metadata
         shell: bash
         run: |
+          DIGEST_VALUE="${{ steps.digest.outputs.digest_value}}"
+          test -n "$DIGEST_VALUE"
           echo "${{ steps.meta.outputs.image_ref }}"
           echo "${{ steps.meta.outputs.image_tag }}"
-          echo "${{ steps.digest.outputs.digest_value }}"
+          echo "$DIGEST_VALUE"
+
