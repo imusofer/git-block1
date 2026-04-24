@@ -19,6 +19,7 @@
 - Build a low-cost Azure container delivery foundation with a Resource Group and Azure Container Registry
 - Practice Azure CLI registry creation, Azure identity-based ACR login, image push/pull validation, and destroy discipline
 - Build pipeline-driven Azure Container Registry publishing in GitHub Actions with Azure OIDC login, release metadata, registry verification, and manifest digest validation
+- Practice operator-style break/fix scenarios across Azure OIDC auth, ACR login, image target identity, metadata wiring, digest lookup, and final CI metadata validation
 
 ## Contents
 - .gitignore
@@ -219,6 +220,20 @@
 - Export manifest digest as a reusable step output in GitHub Actions
 - Distinguish mutable image tag from immutable image digest
 - Print final image reference, tag, and digest as publish metadata in CI
+- Diagnose GitHub Actions failures with `gh run view <run-id> --log-failed`
+- Distinguish branch-triggered vs tag-triggered GitHub OIDC subject values
+- Restrict GitHub Actions push trigger to branch-only execution with `push.branches`
+- Identify how a bad ACR resource name breaks `az acr login`
+- Identify how a bad ACR login server breaks `docker push`
+- Distinguish ACR resource identity (`ACR_NAME`) from registry hostname identity (`ACR_LOGIN_SERVER`)
+- Prove that a wrong repository name can still produce a green pipeline when all checks reuse the same wrong value
+- Inspect ACR repository lists with `az acr repository list --name <acr-name> --output table`
+- Inspect ACR tags for one repository with `az acr repository show-tags --name <acr-name> --repository <repository> --output table`
+- Diagnose pipeline dataflow failures caused by broken `GITHUB_OUTPUT` wiring
+- Identify the first downstream consumer of broken `image_tag` metadata in CI
+- Distinguish lookup failure from export failure in manifest digest validation
+- Harden final metadata output by validating exported digest presence before printing it
+- Distinguish red-pipeline technical failures from green-pipeline semantic/configuration failures
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -259,6 +274,15 @@
 - Verified the manifest digest gate fails on empty output and passes on a valid pushed artifact
 - Verified the workflow exports reusable image digest metadata through step outputs
 - Verified the workflow prints final image reference, image tag, and image digest after publish verification
+- Verified tag-push-triggered OIDC failure was caused by Azure trusting the `master` branch subject but not tag refs
+- Verified restricting `push` to the `master` branch prevents tag pushes from triggering `repo-check`
+- Verified an invalid ACR resource name causes the workflow to fail at `az acr login`
+- Verified an invalid ACR login server causes the workflow to fail at `docker push`
+- Verified an invalid image repository name can still produce a green workflow while publishing to the wrong ACR repository path
+- Verified broken `image_tag` output wiring causes the first downstream failure at `Verify registry`
+- Verified broken digest lookup causes the first downstream failure at `Print manifest digest`
+- Verified display-only metadata steps can hide bad exported values unless they perform explicit validation
+- Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Break/Fix Block 2: registry, auth, and pipeline failure scenarios for ACR publishing and image delivery
+- Terraform Block 2: build low-cost Azure networking and Linux VM foundations with stronger infrastructure layering
