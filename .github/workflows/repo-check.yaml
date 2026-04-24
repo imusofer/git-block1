@@ -114,7 +114,7 @@ jobs:
           IMAGE_REF="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
           echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
           echo "timestamp=${TIMESTAMP}" >> "$GITHUB_OUTPUT"
-          echo "image_tag=${BOGUS_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
           echo "image_ref=${IMAGE_REF}" >> "$GITHUB_OUTPUT"
 
       - name: Show metadata
@@ -156,7 +156,7 @@ jobs:
         shell: bash
         run: |
           IMAGE_TAG="${{ steps.meta.outputs.image_tag }}"
-          DIGEST_VALUE="$(az acr manifest list-metadata -r "$ACR_NAME" -n "$IMAGE_NAME" --query "[?contains(tags, '$IMAGE_TAG')].digest | [0]" -o tsv)"
+          DIGEST_VALUE="$(az acr manifest list-metadata -r "$ACR_NAME" -n "$IMAGE_NAME" --query "[?contains(tags, '$BOGUS_TAG')].digest | [0]" -o tsv)"
           test -n "$DIGEST_VALUE"
           echo "$DIGEST_VALUE"
           echo "digest_value=${DIGEST_VALUE}" >> "$GITHUB_OUTPUT"
