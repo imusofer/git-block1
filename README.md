@@ -20,6 +20,7 @@
 - Practice Azure CLI registry creation, Azure identity-based ACR login, image push/pull validation, and destroy discipline
 - Build pipeline-driven Azure Container Registry publishing in GitHub Actions with Azure OIDC login, release metadata, registry verification, and manifest digest validation
 - Practice operator-style break/fix scenarios across Azure OIDC auth, ACR login, image target identity, metadata wiring, digest lookup, and final CI metadata validation
+- Build a low-cost Azure networking and Linux VM foundation with Terraform, validate SSH reachability, and prove clean destroy discipline without impacting the CI/CD registry baseline
 
 ## Contents
 - .gitignore
@@ -234,6 +235,19 @@
 - Distinguish lookup failure from export failure in manifest digest validation
 - Harden final metadata output by validating exported digest presence before printing it
 - Distinguish red-pipeline technical failures from green-pipeline semantic/configuration failures
+- Build a Terraform-managed Azure VNet, subnet, NSG, public IP, NIC, NIC-to-NSG association, and Linux VM
+- Distinguish NIC-to-subnet attachment from NSG association in Azure Terraform resources
+- Use inline `security_rule` blocks inside an Azure NSG
+- Allow inbound SSH on port 22 through an NSG rule
+- Output a live Azure public IP address from Terraform with `azurerm_public_ip.<name>.ip_address`
+- Refresh Terraform state and outputs with `terraform apply -refresh-only`
+- Verify deployed Azure resources with `az resource list -g <resource-group> -o table`
+- Retrieve a public IP with `az network public-ip show --query ipAddress -o tsv`
+- SSH into a Terraform-built Linux VM with a matching private key
+- Diagnose Azure VM deployment failures caused by image generation mismatch, SKU availability, and regional quota limits
+- Use Azure region changes pragmatically when a valid VM size is unavailable or blocked by quota
+- Recognize partial-apply / orphaned-resource situations and recover by deleting the disposable sandbox RG and resetting local Terraform state
+- Prove destroy discipline with `terraform destroy` while keeping unrelated Azure foundations intact
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -285,4 +299,4 @@
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Terraform Block 2: build low-cost Azure networking and Linux VM foundations with stronger infrastructure layering
+- Ansible Block 1: configure Linux VM foundations with package installs, users, SSH hardening basics, and service configuration tasks
