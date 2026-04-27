@@ -1,0 +1,11 @@
+- name: Get service facts
+  hosts: local
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Print service facts
+      ansible.builtin.debug:
+        var: ansible_facts.services["cron.service"]

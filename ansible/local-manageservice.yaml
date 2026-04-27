@@ -1,0 +1,10 @@
+- name: Manage service state
+  hosts: local
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Ensure service is running and enabled
+      ansible.builtin.systemd_service:
+        name: cron.service
+        state: started
+        enabled: true

@@ -21,6 +21,7 @@
 - Build pipeline-driven Azure Container Registry publishing in GitHub Actions with Azure OIDC login, release metadata, registry verification, and manifest digest validation
 - Practice operator-style break/fix scenarios across Azure OIDC auth, ACR login, image target identity, metadata wiring, digest lookup, and final CI metadata validation
 - Build a low-cost Azure networking and Linux VM foundation with Terraform, validate SSH reachability, and prove clean destroy discipline without impacting the CI/CD registry baseline
+- Build a local Ansible control foundation with inventory targeting, ad-hoc commands, playbooks, privilege escalation, package management, service inspection, service enforcement, and idempotent baseline configuration
 
 ## Contents
 - .gitignore
@@ -57,6 +58,14 @@
 - helm/py-block3/templates/ingress.yaml
 - terraform/main.tf
 - terraform/.terraform.lock.hcl
+- ansible/inventory.ini
+- ansible/local-check.yaml
+- ansible/local-create.yaml
+- ansible/local-changeline.yaml
+- ansible/local-becomepackage.yaml
+- ansible/local-servicestate.yaml
+- ansible/local-manageservice.yaml
+- ansible/local-baseline.yaml
 
 ## What I Practiced
 - git init
@@ -248,6 +257,42 @@
 - Use Azure region changes pragmatically when a valid VM size is unavailable or blocked by quota
 - Recognize partial-apply / orphaned-resource situations and recover by deleting the disposable sandbox RG and resetting local Terraform state
 - Prove destroy discipline with `terraform destroy` while keeping unrelated Azure foundations intact
+- `ansible --version`
+- Ansible inventory structure with `[local]`
+- Localhost targeting with `ansible_connection=local`
+- Ansible ad-hoc command structure - `ansible <target> -i <inventory> -m <module>`
+- Ansible ad-hoc module arguments with `-a "<arguments>"`
+- Ansible `ping` module for control/managed-node execution validation
+- Distinguish Ansible `ping` from ICMP/network ping
+- Ansible `command` module for direct command execution without shell operator interpretation
+- Ansible `shell` module for commands requiring shell features like pipes
+- Distinguish local shell expansion from remote/target-side command behavior
+- Prove `command` vs `shell` behavior with pipe handling
+- `ansible-playbook -i <inventory> <playbook>`
+- Basic Ansible playbook structure with `name`, `hosts`, and `tasks`
+- Disable automatic fact gathering with `gather_facts: false`
+- Print messages and variables with `ansible.builtin.debug`
+- Manage directory state with `ansible.builtin.file`
+- Prove Ansible idempotency through first-run `changed=1` and second-run `changed=0`
+- Manage exact file content with `ansible.builtin.copy`
+- Manage one line inside an existing file with `ansible.builtin.lineinfile`
+- Distinguish whole-file ownership with `copy` from single-line ownership with `lineinfile`
+- Use quoted Linux permission modes in Ansible such as `"0755"` and `"0644"`
+- Interpret Linux file modes like `drwxr-xr-x` and `-rw-r--r--`
+- Use privilege escalation with `become: true`
+- Prompt for sudo/become password with `ansible-playbook -K`
+- Manage Ubuntu package state with `ansible.builtin.apt`
+- Ensure a package is installed with `state: present`
+- Verify installed packages with `tree --version` and `dpkg -l <package>`
+- Gather service state safely with `ansible.builtin.service_facts`
+- Inspect discovered service keys under `ansible_facts.services`
+- Debug service facts for `cron.service`
+- Interpret systemd service state fields like `state: running` and `status: enabled`
+- Manage service runtime and boot state with `ansible.builtin.systemd_service`
+- Ensure a systemd service is started and enabled
+- Verify service state with `systemctl is-active <service>` and `systemctl is-enabled <service>`
+- Build a combined local Ansible baseline with directory, file, package, and service state
+- Prove a combined Ansible baseline is idempotent across repeated playbook runs
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -299,4 +344,4 @@
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Ansible Block 1: configure Linux VM foundations with package installs, users, SSH hardening basics, and service configuration tasks
+- Observability Block 1: practice local/platform observability fundamentals with structured logs, service visibility, metrics concepts, dashboards, alerts, and failure-oriented troubleshooting

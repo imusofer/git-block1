@@ -1,0 +1,10 @@
+- name: Ensure a line exists
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Ensure echo bello grep bello exists
+      ansible.builtin.lineinfile:
+        path: /tmp/ansible-block20/local-create.txt
+        line: "echo bello | grep bello"
+        create: true
+        mode: "0644"

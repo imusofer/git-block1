@@ -1,0 +1,11 @@
+- name: Create file
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Create local-create 
+      ansible.builtin.copy:
+        dest: /tmp/ansible-block20/local-create.txt
+        content: |
+          echo hello | grep hello
+          echo mello | grep mello
+        mode: "0644"

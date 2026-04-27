@@ -1,0 +1,9 @@
+- name: Use sudo and install package
+  hosts: local
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Install package
+      ansible.builtin.apt:
+        name: tree
+        state: present

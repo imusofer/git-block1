@@ -1,0 +1,17 @@
+- name: Local check
+  hosts: local
+  tasks:
+    - name: Print hi Mark
+      ansible.builtin.debug:
+        msg: "Oh hi Mark"
+
+    - name: Check if Music exists
+      ansible.builtin.file:
+        path: /home/imusofer/Music
+        state: directory
+
+    - name: Local file idempotency check
+      ansible.builtin.file:
+        path: /tmp/ansible-block20
+        state: directory
+        mode: "0755"

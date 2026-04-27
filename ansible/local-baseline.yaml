@@ -1,0 +1,29 @@
+- name: Apply a local baseline
+  hosts: local
+  gather_facts: false
+  become: true
+  tasks:
+    - name: /tmp/ansible-block20 exists with mode "0755"
+      ansible.builtin.file:
+        path: /tmp/ansible-block20
+        state: directory
+        mode: "0755"
+
+    - name: baseline.conf exists with mode "0644" and exact content
+      ansible.builtin.copy:
+        dest: /tmp/ansible-block20/baseline.conf
+        content: |
+          MANAGED_BY=ansible
+          BLOCK=20
+        mode: "0644"
+
+    - name: tree package is present
+      ansible.builtin.apt:
+        name: tree
+        state: present
+
+    - name: cron.service is started and enabled
+      ansible.builtin.systemd_service:
+        name: cron.service
+        state: started
+        enabled: true
