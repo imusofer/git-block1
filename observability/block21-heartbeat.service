@@ -1,0 +1,9 @@
+[Unit]
+Description=Block21 Heartbeat Service
+
+[Service]
+Type=simple
+ExecStart=/home/imusofer/devops-git-lab/git-block1/observability/heartbeat.sh
+
+[Install]
+WantedBy=multi-user.target

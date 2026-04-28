@@ -22,6 +22,7 @@
 - Practice operator-style break/fix scenarios across Azure OIDC auth, ACR login, image target identity, metadata wiring, digest lookup, and final CI metadata validation
 - Build a low-cost Azure networking and Linux VM foundation with Terraform, validate SSH reachability, and prove clean destroy discipline without impacting the CI/CD registry baseline
 - Build a local Ansible control foundation with inventory targeting, ad-hoc commands, playbooks, privilege escalation, package management, service inspection, service enforcement, and idempotent baseline configuration
+- Build a local observability foundation with systemd service inspection, journald log analysis, structured-ish service logs, controlled failure testing, health checks, and operational runbook documentation
 
 ## Contents
 - .gitignore
@@ -66,6 +67,10 @@
 - ansible/local-servicestate.yaml
 - ansible/local-manageservice.yaml
 - ansible/local-baseline.yaml
+- observability/block21-heartbeat.service
+- observability/heartbeat.sh
+- observability/healthcheck.sh
+- observability/block21-heartbeat-runbook.md
 
 ## What I Practiced
 - git init
@@ -293,6 +298,29 @@
 - Verify service state with `systemctl is-active <service>` and `systemctl is-enabled <service>`
 - Build a combined local Ansible baseline with directory, file, package, and service state
 - Prove a combined Ansible baseline is idempotent across repeated playbook runs
+- `systemctl is-active <service>`
+- `systemctl is-enabled <service>`
+- `systemctl status <service> --no-pager`
+- `journalctl -u <service>`
+- `journalctl -u <service> -n <number> --no-pager`
+- `journalctl -u <service> --since "1 minute ago" --no-pager`
+- Follow live service logs with `journalctl -u <service> -f`
+- Create a local systemd service unit for a repo-managed script
+- Use `ExecStart` with an absolute script path in a systemd unit
+- Reload systemd unit definitions with `sudo systemctl daemon-reload`
+- Start, stop, restart, and enable a local systemd service
+- Verify failed units with `systemctl --failed`
+- Diagnose a bad systemd `ExecStart` path from `status=203/EXEC`
+- Recover a failed systemd service with unit correction, daemon reload, reset-failed, and restart
+- Emit structured-ish logs with fields like `level`, `service`, `event`, `count`, and `reason`
+- Filter journald logs with `grep`
+- Count recent log events with `grep -c`
+- Distinguish current service state from historical journal logs
+- Build a health-check script using `systemctl`, `journalctl`, `grep -c`, and exit codes
+- Use `exit 0` for healthy state and `exit 1` for unhealthy state
+- Handle `grep` zero-match behavior safely under `set -euo pipefail` with `|| true`
+- Detect unhealthy service behavior from recent simulated failure logs
+- Document service operation, failure modes, recovery steps, and final verification in a runbook
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -344,4 +372,4 @@
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Observability Block 1: practice local/platform observability fundamentals with structured logs, service visibility, metrics concepts, dashboards, alerts, and failure-oriented troubleshooting
+- Break/Fix Block 3: practice Linux service, network, log, and observability troubleshooting using intentionally broken local scenarios
