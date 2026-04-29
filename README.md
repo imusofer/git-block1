@@ -23,6 +23,7 @@
 - Build a low-cost Azure networking and Linux VM foundation with Terraform, validate SSH reachability, and prove clean destroy discipline without impacting the CI/CD registry baseline
 - Build a local Ansible control foundation with inventory targeting, ad-hoc commands, playbooks, privilege escalation, package management, service inspection, service enforcement, and idempotent baseline configuration
 - Build a local observability foundation with systemd service inspection, journald log analysis, structured-ish service logs, controlled failure testing, health checks, and operational runbook documentation
+- Practice Linux and observability break/fix troubleshooting through intentionally broken local service, log, schema, permission, and health-check scenarios, then restore a known-good operating baseline
 
 ## Contents
 - .gitignore
@@ -321,6 +322,21 @@
 - Handle `grep` zero-match behavior safely under `set -euo pipefail` with `|| true`
 - Detect unhealthy service behavior from recent simulated failure logs
 - Document service operation, failure modes, recovery steps, and final verification in a runbook
+- Distinguish current service state from recent log history during troubleshooting
+- Identify false negatives caused by recent unhealthy events still present inside the health-check time window
+- Diagnose startup-silence / delayed-readiness cases where a service is active but has not emitted recent heartbeat logs yet
+- Diagnose log schema drift where the service is healthy but the health check searches for an outdated heartbeat event name
+- Diagnose health-check misconfiguration where the checker targets the wrong systemd unit name
+- Demonstrate a false healthy caused by failure-schema drift between emitted failure logs and the fields the health check expects
+- Prove that a healthy service can still be reported unhealthy when recent historical failures remain inside the checker’s time window
+- Prove that a service can be active but still correctly fail health checks when no recent heartbeat signal exists
+- Distinguish service failure from checker failure during break/fix analysis
+- Isolate execution-permission failure on a correct `ExecStart` target by removing the executable bit from `heartbeat.sh`
+- Diagnose `status=203/EXEC` caused by missing execute permission on an existing script path
+- Restore executable permissions and recover a failed systemd service cleanly
+- Restore a known-good service and health-check baseline after break/fix mutations
+- Validate service behavior against the health-check window rather than assuming `active` means healthy
+- Use PID and recent journal entries to distinguish current-process behavior from prior-process history
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -372,4 +388,4 @@
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Break/Fix Block 3: practice Linux service, network, log, and observability troubleshooting using intentionally broken local scenarios
+- Security Block 1: practice secrets discipline, least privilege, dependency/update hygiene, and secure handling patterns across the local service and repo workflow

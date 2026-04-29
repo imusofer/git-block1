@@ -13,5 +13,6 @@ else
   echo "level=info service=$service event=heartbeat count=$count"
 fi
 
-  sleep 1
+sleep 15
+
 done
