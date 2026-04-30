@@ -24,6 +24,7 @@
 - Build a local Ansible control foundation with inventory targeting, ad-hoc commands, playbooks, privilege escalation, package management, service inspection, service enforcement, and idempotent baseline configuration
 - Build a local observability foundation with systemd service inspection, journald log analysis, structured-ish service logs, controlled failure testing, health checks, and operational runbook documentation
 - Practice Linux and observability break/fix troubleshooting through intentionally broken local service, log, schema, permission, and health-check scenarios, then restore a known-good operating baseline
+- Build a local security baseline with tracked-template/untracked-real secret handling, restricted env-file permissions, EnvironmentFile-based service wiring, least-privilege systemd execution, trusted-group access boundaries, and documented security notes
 
 ## Contents
 - .gitignore
@@ -72,6 +73,8 @@
 - observability/heartbeat.sh
 - observability/healthcheck.sh
 - observability/block21-heartbeat-runbook.md
+- observability/heartbeat.env.example
+- observability/block23-security-notes.md
 
 ## What I Practiced
 - git init
@@ -337,6 +340,24 @@
 - Restore a known-good service and health-check baseline after break/fix mutations
 - Validate service behavior against the health-check window rather than assuming `active` means healthy
 - Use PID and recent journal entries to distinguish current-process behavior from prior-process history
+- Distinguish tracked template files from untracked real secret-like env files
+- Ignore local secret-like files in `.gitignore` while keeping example env files tracked
+- Restrict a local env file with `chmod 600` and later `chmod 640` for trusted-group sharing
+- Use `EnvironmentFile=` in a systemd unit to load local runtime values
+- Read `HEARTBEAT_MODE` from the environment instead of hardcoding behavior in the script
+- Keep secret-like values out of journald logs
+- Create a dedicated low-privilege system user with `useradd --system --no-create-home --shell /usr/sbin/nologin`
+- Create a dedicated trusted-readers group with `groupadd`
+- Add users to a supplemental group with `usermod -aG`
+- Use shared group ownership plus restrictive file modes to let the service read `heartbeat.env` without making it world-readable
+- Run a systemd service as `User=` and `Group=` instead of root
+- Diagnose `HEARTBEAT_MODE: unbound variable` caused by restarting before `systemctl daemon-reload`
+- Diagnose `Permission denied` / `status=203/EXEC` caused by missing parent-directory traversal permissions for the service user
+- Fix parent-directory traversal with controlled group ownership and directory mode changes instead of making the path world-readable
+- Prove access boundaries with `sudo -u <user> cat <file>`
+- Verify that `heartbeatsvc` can read the env file while `outsider` cannot
+- Distinguish repo-managed artifacts from local runtime inputs and OS/runtime-provided dependencies
+- Document current security controls and remaining weaknesses in `block23-security-notes.md`
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -388,4 +409,4 @@
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Security Block 1: practice secrets discipline, least privilege, dependency/update hygiene, and secure handling patterns across the local service and repo workflow
+- Azure deployment target block: deploy the workload to a low-cost Azure runtime target with secure env handling, cost discipline, and deployment verification

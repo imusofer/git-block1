@@ -4,6 +4,9 @@ Description=Block21 Heartbeat Service
 [Service]
 Type=simple
 ExecStart=/home/imusofer/devops-git-lab/git-block1/observability/heartbeat.sh
+EnvironmentFile=/home/imusofer/devops-git-lab/git-block1/observability/heartbeat.env
+User=heartbeatsvc
+Group=heartbeatreaders
 
 [Install]
 WantedBy=multi-user.target
