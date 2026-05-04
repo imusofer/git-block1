@@ -25,6 +25,7 @@
 - Build a local observability foundation with systemd service inspection, journald log analysis, structured-ish service logs, controlled failure testing, health checks, and operational runbook documentation
 - Practice Linux and observability break/fix troubleshooting through intentionally broken local service, log, schema, permission, and health-check scenarios, then restore a known-good operating baseline
 - Build a local security baseline with tracked-template/untracked-real secret handling, restricted env-file permissions, EnvironmentFile-based service wiring, least-privilege systemd execution, trusted-group access boundaries, and documented security notes
+- Deploy the existing Flask workload to a low-cost Azure runtime target with Azure Container Apps, private ACR image pulls through managed identity, runtime env injection, external ingress verification, and clean teardown discipline
 
 ## Contents
 - .gitignore
@@ -358,6 +359,34 @@
 - Verify that `heartbeatsvc` can read the env file while `outsider` cannot
 - Distinguish repo-managed artifacts from local runtime inputs and OS/runtime-provided dependencies
 - Document current security controls and remaining weaknesses in `block23-security-notes.md`
+- Azure Container Apps as a low-cost first Azure runtime target
+- Distinguish Azure Container Apps Environment from the Container App workload
+- Register required Azure providers for Container Apps
+- Inspect ACR repositories with `az acr repository list`
+- Inspect ACR tags with `az acr repository show-tags`
+- Build an exact deployable image reference from ACR repository + tag
+- Map the Flask app listener to Azure Container Apps `target-port`
+- Create a disposable Azure resource group for runtime deployment
+- Create an Azure Container Apps environment with `az containerapp env create`
+- Create a user-assigned managed identity with `az identity create`
+- Distinguish managed identity resource ID from principal ID
+- Assign Azure RBAC with the correct principal, role, and scope model
+- Diagnose a bad RBAC scope assignment and correct it to the ACR resource scope
+- Grant `AcrPull` on `acrazblock1` to a managed identity for private image pulls
+- Check ACR ARM-token authentication state with `az acr config authentication-as-arm show`
+- Distinguish GitHub Actions OIDC auth from Azure-native managed identity auth
+- Attach a user-assigned managed identity to an Azure Container App
+- Use `--registry-identity` so Azure Container Apps can pull a private ACR image without registry credentials
+- Create a public Azure Container App with external ingress
+- Inspect Azure Container App state with `az containerapp show`
+- Inspect Azure Container App revisions with `az containerapp revision list`
+- Verify public workload behavior with `curl` against `/`, `/health`, and `/config`
+- Diagnose default runtime config values caused by missing Azure Container Apps env vars
+- Map Kubernetes ConfigMap-style runtime config to Azure Container Apps env vars
+- Update Azure Container Apps env vars with `az containerapp update --set-env-vars`
+- Observe that env-var updates create a new Azure Container Apps revision
+- Verify the new revision receives traffic and returns the updated runtime config
+- Practice disposable cloud-target discipline by preparing full-resource-group teardown after verification
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -409,4 +438,4 @@
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
 ## Next Automation Step
-- Azure deployment target block: deploy the workload to a low-cost Azure runtime target with secure env handling, cost discipline, and deployment verification
+- CI/CD Block 4: build a pipeline-driven deployment flow to the Azure runtime target with environments, approvals, deployment verification, and rollback-aware release handling
