@@ -26,11 +26,13 @@
 - Practice Linux and observability break/fix troubleshooting through intentionally broken local service, log, schema, permission, and health-check scenarios, then restore a known-good operating baseline
 - Build a local security baseline with tracked-template/untracked-real secret handling, restricted env-file permissions, EnvironmentFile-based service wiring, least-privilege systemd execution, trusted-group access boundaries, and documented security notes
 - Deploy the existing Flask workload to a low-cost Azure runtime target with Azure Container Apps, private ACR image pulls through managed identity, runtime env injection, external ingress verification, and clean teardown discipline
+- Build a pipeline-driven Azure Container Apps deployment workflow with GitHub Environments, manual approval gating, Azure OIDC authentication, deployment verification, retry logic, revision-aware validation, rollback activation, and deployment summary reporting
 
 ## Contents
 - .gitignore
 - README.md
 - .github/workflows/repo-check.yaml
+- .github/workflows/deploy-aca.yaml
 - scripts/script.sh
 - scripts/py-block1.py
 - scripts/py-block2.py
@@ -78,93 +80,93 @@
 - observability/block23-security-notes.md
 
 ## What I Practiced
-- git init
-- git status
-- git add
-- git commit
-- git log
-- .gitignore behavior
-- forced add of an ignored file to make Git track it
-- git tag
-- git diff
-- git diff --staged
-- git branch
-- git switch
+- `git init`
+- `git status`
+- `git add`
+- `git commit`
+- `git log`
+- `.gitignore` behavior
+- Forced add of an ignored file to make Git track it
+- `git tag`
+- `git diff`
+- `git diff --staged`
+- `git branch`
+- `git switch`
 - Python variables
 - Python strings
 - Python f-strings
 - Create a basic Python repo script
 - One argument with multiple valid values
-- Python for loops
+- Python `for` loops
 - Python lists
-- Python range()
-- Python len()
-- Python with open()
-- Python line.strip()
-- Dockerfile basics
-- docker build -t
-- docker run --rm
+- Python `range()`
+- Python `len()`
+- Python `with open()`
+- Python `line.strip()`
+- `Dockerfile` basics
+- `docker build -t`
+- `docker run --rm`
 - Containerizing a Python script
-- .dockerignore structure and behavior
+- `.dockerignore` structure and behavior
 - Kubernetes Pod YAML file structure and behavior
-- kind get clusters
-- Load Docker image into cluster - kind load docker-image <image-name> --name <cluster-name>
-- Apply manifest from YAML file - kubectl apply -f <manifest-name>
-- Check Pod status - kubectl get pod
-- Get Pods that match app label - kubectl get pods -l app=<app-label>
-- Check Deployment status - kubectl get deployments
-- Inspect in-depth information of the Deployment - kubectl describe deployment <deployment-name>
-- Inspect in-depth information of the Pod - kubectl describe pod <pod-name>
-- Inspect Pod logs - kubectl logs <pod-name>
-- Delete deployments/jobs - kubectl delete job/deployment <deployment/job-name>
-- Running a one-off Job from a suspended CronJob manifest - kubectl create job <manual-job-name> --from=cronjob/<cronjob-name>
-- Python @app.route("")
-- Python os.getenv()
-- Python datetime.now(ZoneInfo()).isoformat()
-- Python main guard - if __name__ == "__main__":
-- docker run -d --rm --name <container-name>
-- docker ps
-- docker logs <container-name/ID>
-- docker stop <container-name/ID>
-- kubectl port-forward service/<service-name> <port>:<port>
-- kubectl scale deployment <deployment-name> --replicas=<n>
-- kubectl rollout status deployment/<deployment-name>
-- kubectl logs -l app=<app-label> --tail=5 --prefix=true
-- kubectl get configmaps
-- kubectl describe configmap <configmap-name>
-- kubectl exec <pod-name> -- printenv
-- kubectl rollout restart deployment/<deployment-name>
-- kubectl get secrets
-- kubectl describe secret <secret-name>
-- kubectl get namespaces
-- kubectl describe node <node-name>
-- kubectl rollout history deployment/<deployment-name> -n <namespace-name>
-- kubectl rollout history deployment/<deployment-name> --revision=<n> -n <namespace-name>
-- kubectl rollout pause deployment/<deployment-name> -n <namespace-name>
-- kubectl rollout resume deployment/<deployment-name> -n <namespace-name>
-- kubectl rollout undo deployment/<deployment-name> --to-revision=<n> -n <namespace-name>
-- kubectl rollout undo deployment/<deployment-name> -n <namespace-name>
-- kubectl get ingressclass
-- kubectl get ingress -n <namespace-name>
-- kubectl describe ingress -n <namespace-name>
-- kubectl top pods -n <namespace-name>
-- kubectl top nodes
-- kubectl get apiservices
-- KUBE_EDITOR=nano kubectl edit deployment <deployment-name> -n <namespace-name>
-- helm version
-- helm create <chart-path>
-- helm lint <chart-path>
-- helm template <release-name> <chart-path>
-- helm install <release-name> <chart-path> -n <namespace-name> --dry-run=client --debug
-- helm list -n <namespace-name> --pending --failed --uninstalling
-- helm status <release-name> -n <namespace-name>
-- helm history <release-name> -n <namespace-name>
-- helm install <release-name> <chart-path> -n <namespace-name> --take-ownership
-- helm upgrade --install <release-name> <chart-path> -n <namespace-name> --take-ownership --force-conflicts --wait
-- helm upgrade --install <release-name> <chart-path> -n <namespace-name> --wait --timeout=<duration>
-- helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set hpa.maxReplicas=<n> --wait --timeout=<duration>
-- helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set image.repository=<value> --wait --timeout=<duration>
-- helm get values <release-name> -n <namespace-name>
+- `kind get clusters`
+- Load Docker image into cluster with `kind load docker-image <image-name> --name <cluster-name>`
+- Apply manifest from YAML file with `kubectl apply -f <manifest-name>`
+- Check Pod status with `kubectl get pod`
+- Get Pods that match app label with `kubectl get pods -l app=<app-label>`
+- Check Deployment status with `kubectl get deployments`
+- Inspect in-depth information of the Deployment with `kubectl describe deployment <deployment-name>`
+- Inspect in-depth information of the Pod with `kubectl describe pod <pod-name>`
+- Inspect Pod logs with `kubectl logs <pod-name>`
+- Delete deployments/jobs with `kubectl delete job/deployment <deployment/job-name>`
+- Run a one-off Job from a suspended CronJob manifest with `kubectl create job <manual-job-name> --from=cronjob/<cronjob-name>`
+- Python `@app.route("")`
+- Python `os.getenv()`
+- Python `datetime.now(ZoneInfo()).isoformat()`
+- Python main guard with `if __name__ == "__main__":`
+- `docker run -d --rm --name <container-name>`
+- `docker ps`
+- `docker logs <container-name/ID>`
+- `docker stop <container-name/ID>`
+- `kubectl port-forward service/<service-name> <port>:<port>`
+- `kubectl scale deployment <deployment-name> --replicas=<n>`
+- `kubectl rollout status deployment/<deployment-name>`
+- `kubectl logs -l app=<app-label> --tail=5 --prefix=true`
+- `kubectl get configmaps`
+- `kubectl describe configmap <configmap-name>`
+- `kubectl exec <pod-name> -- printenv`
+- `kubectl rollout restart deployment/<deployment-name>`
+- `kubectl get secrets`
+- `kubectl describe secret <secret-name>`
+- `kubectl get namespaces`
+- `kubectl describe node <node-name>`
+- `kubectl rollout history deployment/<deployment-name> -n <namespace-name>`
+- `kubectl rollout history deployment/<deployment-name> --revision=<n> -n <namespace-name>`
+- `kubectl rollout pause deployment/<deployment-name> -n <namespace-name>`
+- `kubectl rollout resume deployment/<deployment-name> -n <namespace-name>`
+- `kubectl rollout undo deployment/<deployment-name> --to-revision=<n> -n <namespace-name>`
+- `kubectl rollout undo deployment/<deployment-name> -n <namespace-name>`
+- `kubectl get ingressclass`
+- `kubectl get ingress -n <namespace-name>`
+- `kubectl describe ingress -n <namespace-name>`
+- `kubectl top pods -n <namespace-name>`
+- `kubectl top nodes`
+- `kubectl get apiservices`
+- `KUBE_EDITOR=nano kubectl edit deployment <deployment-name> -n <namespace-name>`
+- `helm version`
+- `helm create <chart-path>`
+- `helm lint <chart-path>`
+- `helm template <release-name> <chart-path>`
+- `helm install <release-name> <chart-path> -n <namespace-name> --dry-run=client --debug`
+- `helm list -n <namespace-name> --pending --failed --uninstalling`
+- `helm status <release-name> -n <namespace-name>`
+- `helm history <release-name> -n <namespace-name>`
+- `helm install <release-name> <chart-path> -n <namespace-name> --take-ownership`
+- `helm upgrade --install <release-name> <chart-path> -n <namespace-name> --take-ownership --force-conflicts --wait`
+- `helm upgrade --install <release-name> <chart-path> -n <namespace-name> --wait --timeout=<duration>`
+- `helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set hpa.maxReplicas=<n> --wait --timeout=<duration>`
+- `helm upgrade <release-name> <chart-path> -n <namespace-name> --reuse-values --set image.repository=<value> --wait --timeout=<duration>`
+- `helm get values <release-name> -n <namespace-name>`
 - GitHub Actions multi-line `run: |` blocks
 - GitHub Actions `uses:` action steps
 - GitHub Actions failure-only step conditions - `if: ${{ failure() }}`
@@ -387,6 +389,32 @@
 - Observe that env-var updates create a new Azure Container Apps revision
 - Verify the new revision receives traffic and returns the updated runtime config
 - Practice disposable cloud-target discipline by preparing full-resource-group teardown after verification
+- GitHub Actions manual deployment trigger with `workflow_dispatch` inputs
+- GitHub Actions environment-typed input with `type: environment`
+- Distinguish GitHub Environment from Azure Container Apps environment
+- Use GitHub Environment approval gating for deployment workflows
+- Use GitHub Actions environment object form with `name` and `url`
+- Understand that GitHub OIDC subject values change when a job targets an environment
+- Add a second Azure federated credential for an environment-scoped GitHub OIDC subject
+- Distinguish Azure authentication failure from Azure authorization / RBAC failure in pipeline logs
+- Assign Azure RBAC at the correct scope for deployment automation
+- Build a rerunnable create-or-validate deployment flow for Resource Group, Container Apps environment, and user-assigned managed identity
+- Check for an existing Azure role assignment before creating a new one
+- Grant `AcrPull` at the exact ACR resource scope from a deployment workflow
+- Create an Azure Container App from GitHub Actions with private ACR pull through a user-assigned managed identity
+- Use both `--user-assigned` and `--registry-identity` for Azure Container Apps private image pulls
+- Read Azure Container Apps public FQDN with `az containerapp show --query "properties.configuration.ingress.fqdn" -o tsv`
+- Export reusable workflow metadata through `GITHUB_OUTPUT`
+- Reuse step outputs across later workflow steps for app URL and revision values
+- Write operator-facing deployment results to `GITHUB_STEP_SUMMARY`
+- Validate default runtime behavior before env-var injection by checking `/health` and `/config`
+- Update Azure Container Apps runtime env vars from GitHub Actions with `az containerapp update --set-env-vars`
+- Prove env-var updates create a new Azure Container Apps revision by comparing old vs new revision names
+- Retry post-update verification with a bounded Bash loop and fixed sleep budget
+- Separate health success from runtime-config correctness in deployment verification
+- Reactivate the previous Azure Container Apps revision on failed post-update verification
+- Verify rollback activation by checking the old revision's `properties.active` state
+- Expose the final deployment URL through the GitHub Environment deployment view
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -437,5 +465,27 @@
 - Verified display-only metadata steps can hide bad exported values unless they perform explicit validation
 - Verified `Show image metadata` now fails on empty exported digest output after adding digest presence validation
 
+## Deploy ACA Workflow Verification
+- Verified `.github/workflows/deploy-aca.yaml` can be manually dispatched with deployment inputs
+- Verified the deploy job targets a GitHub Environment and can use environment protection rules
+- Verified the production deployment flow requires the environment-scoped Azure federated credential subject
+- Verified Azure OIDC login succeeds for the production environment deployment workflow
+- Verified the deployment identity can create the disposable Azure Resource Group `rg-block25`
+- Verified the workflow can create the Azure Container Apps environment `cae-block25`
+- Verified the workflow can create the user-assigned managed identity `id-block25-acrpull`
+- Verified the workflow checks for and assigns `AcrPull` on `acrazblock1` at the correct ACR resource scope
+- Verified the workflow can create or update the Azure Container App `ca-block25`
+- Verified the workflow deploys the private image `acrazblock1.azurecr.io/git-block1-py-block3:a77f603-20260430-103417`
+- Verified the workflow reads and prints the live application URL from Azure Container Apps
+- Verified `/health` succeeds after deployment
+- Verified `/config` returns default runtime values before env-var update
+- Verified the workflow updates runtime env vars after initial deployment verification
+- Verified post-update verification retries health and config checks with a bounded retry budget
+- Verified `/config` returns the updated runtime values after env-var update
+- Verified the deployment revision changed from `ca-block25--98wktem` to `ca-block25--0000001`
+- Verified the workflow writes a final deployment summary to `GITHUB_STEP_SUMMARY`
+- Verified the workflow includes rollback-aware failure handling by reactivating the previous revision if post-update verification exhausts its retry budget
+- Verified successful production deployment at `https://ca-block25.livelywater-3c4a6352.northeurope.azurecontainerapps.io`
+
 ## Next Automation Step
-- CI/CD Block 4: build a pipeline-driven deployment flow to the Azure runtime target with environments, approvals, deployment verification, and rollback-aware release handling
+- Break/Fix Block 4: practice cloud deployment failure and rollback scenarios across Azure Container Apps image, runtime config, revision, identity, and verification paths
