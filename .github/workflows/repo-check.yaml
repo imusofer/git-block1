@@ -169,4 +169,3 @@ jobs:
           echo "${{ steps.meta.outputs.image_ref }}"
           echo "${{ steps.meta.outputs.image_tag }}"
           echo "$DIGEST_VALUE"
-

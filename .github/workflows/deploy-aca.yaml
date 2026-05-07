@@ -1,0 +1,324 @@
+name: Deploy ACA
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: "GitHub Environment for this deployment"
+        required: true
+        type: environment
+
+      resource_group:
+        description: "Disposable Azure resource group for the ACA target"
+        required: true
+        type: string
+        default: "rg-block25"
+
+      containerapp_environment:
+        description: "Azure Container Apps environment name"
+        required: true
+        type: string
+        default: "cae-block25"
+
+      managed_identity_name:
+        description: "User assigned managed identity for the container app to pull from ACR"
+        required: true
+        type: string
+        default: "id-block25-acrpull"
+
+      containerapp_name:
+        description: "Azure Container App name"
+        required: true
+        type: string
+        default: "ca-block25"
+
+      image_tag:
+        description: "ACR image to deploy"
+        required: true
+        type: string
+
+      target_port:
+        description: "Container port exposed by the app"
+        required: true
+        type: number
+        default: 5000
+
+jobs:
+  deploy-aca:
+    environment:
+      name: ${{ inputs.deploy_environment }}
+      url: ${{ steps.get_url.outputs.container_app_url }}
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: git-block1-py-block3
+      ACR_NAME: acrazblock1
+      ACR_LOGIN_SERVER: acrazblock1.azurecr.io
+      LOCATION: northeurope
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Print deployment output summary
+        run: |
+          echo Environment: ${{ inputs.deploy_environment }}
+          echo Resource group: ${{ inputs.resource_group }}
+          echo Container app environment: ${{ inputs.containerapp_environment }}
+          echo Container app name: ${{ inputs.containerapp_name }}
+          echo Image tag: ${{ inputs.image_tag }}
+          echo Target port: ${{ inputs.target_port }}
+          echo Full image reference: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}
+
+      - name: Azure login
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Verify Azure session and log in to ACR
+        shell: bash
+        run: |
+          az account show
+          az acr login --name "$ACR_NAME"
+
+      - name: Verify Azure resources exist
+        shell: bash
+        run: |
+          if ! az group exists \
+            --name "${{ inputs.resource_group }}" | grep -qx true; then
+            echo "Resource group ${{ inputs.resource_group }} does not exist, creating it..."
+            az group create --name "${{ inputs.resource_group }}" --location "$LOCATION"
+            else
+            echo "Resource group ${{ inputs.resource_group }} already exists."
+          fi
+      
+          if ! az containerapp env show \
+            --name "${{ inputs.containerapp_environment }}" \
+            --resource-group "${{ inputs.resource_group }}" > /dev/null 2>&1; then
+            echo "Container app environment ${{ inputs.containerapp_environment }} does not exist, creating it..."
+            az containerapp env create \
+            --name "${{ inputs.containerapp_environment }}" \
+            --resource-group "${{ inputs.resource_group }}" \
+            --location "$LOCATION"
+          else
+            echo "Container app environment ${{ inputs.containerapp_environment }} already exists."
+          fi
+
+          if ! az identity show \
+            --resource-group "${{ inputs.resource_group }}" \
+            --name "${{ inputs.managed_identity_name }}" > /dev/null 2>&1; then
+            echo "Managed identity ${{ inputs.managed_identity_name }} does not exist, creating it..."
+            az identity create \
+            --name "${{ inputs.managed_identity_name }}" \
+            --resource-group "${{ inputs.resource_group }}" \
+            --location "$LOCATION"
+          else
+            echo "Managed identity ${{ inputs.managed_identity_name }} already exists."
+          fi
+
+          IDENTITY_RESOURCE_ID="$(az identity show \
+            --resource-group "${{ inputs.resource_group }}" \
+            --name "${{ inputs.managed_identity_name }}" \
+            --query "id" \
+            -o tsv)"
+
+          IDENTITY_PRINCIPAL_ID="$(az identity show \
+            --resource-group "${{ inputs.resource_group }}" \
+            --name "${{ inputs.managed_identity_name }}" \
+            --query "principalId" \
+            -o tsv)"
+
+          ACR_SCOPE="$(az acr show \
+            --name "$ACR_NAME" \
+            --query "id" \
+            -o tsv)"
+          
+          az role assignment list \
+            --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
+            --scope "$ACR_SCOPE" \
+            --query "[?roleDefinitionName=='AcrPull'].{Role:roleDefinitionName, Scope:scope}" \
+            -o json
+
+            if ! az role assignment list \
+              --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
+              --scope "$ACR_SCOPE" \
+              --query "[?roleDefinitionName=='AcrPull']" \
+              -o json | grep -q 'AcrPull'; then
+                echo "Assigning AcrPull role to managed identity ${{ inputs.managed_identity_name }} for ACR $ACR_NAME..."
+                az role assignment create \
+                  --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
+                  --assignee-principal-type "ServicePrincipal" \
+                  --role "AcrPull" \
+                  --scope "$ACR_SCOPE"
+            else
+                echo "Managed identity ${{ inputs.managed_identity_name }} already has AcrPull role for ACR $ACR_NAME."
+            fi
+
+          if ! az containerapp show \
+            --name "${{ inputs.containerapp_name }}" \
+            --resource-group "${{ inputs.resource_group }}" > /dev/null 2>&1; then
+            echo "Container app ${{ inputs.containerapp_name }} does not exist, creating it..."
+            az containerapp create \
+              --name "${{ inputs.containerapp_name }}" \
+              --resource-group "${{ inputs.resource_group }}" \
+              --environment "${{ inputs.containerapp_environment }}" \
+              --image "${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}" \
+              --target-port "${{ inputs.target_port }}" \
+              --ingress 'external' \
+              --registry-server "$ACR_LOGIN_SERVER" \
+              --registry-identity "$IDENTITY_RESOURCE_ID" \
+              --user-assigned "$IDENTITY_RESOURCE_ID"
+          else
+            echo "Container app ${{ inputs.containerapp_name }} already exists, updating image..."
+            az containerapp update \
+              --name "${{ inputs.containerapp_name }}" \
+              --resource-group "${{ inputs.resource_group }}" \
+              --image "${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
+          fi
+
+      - name: Output container app URL
+        id: get_url
+        shell: bash
+        run: |
+          APP_URL="$(az containerapp show \
+            --name "${{ inputs.containerapp_name }}" \
+            --resource-group "${{ inputs.resource_group }}" \
+            --query "properties.configuration.ingress.fqdn" \
+            -o tsv)"
+          echo "Container app URL: https://$APP_URL"
+          echo "container_app_url=https://$APP_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Verify default configuration
+        id: first_revision
+        shell: bash
+        run: |
+          REVISION=$(az containerapp revision list \
+            --name "${{ inputs.containerapp_name }}" \
+            --resource-group "${{ inputs.resource_group }}" \
+            --query "sort_by(@, &properties.createdTime)[-1].name" \
+            -o tsv)
+
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
+
+          if curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/health" > /dev/null; then
+            echo "Initial health check passed!"
+          else
+            echo "Initial health check failed. Please investigate the container app logs for more details."
+            exit 1
+          fi
+          
+          CONFIG_RESPONSE="$(curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/config")"
+
+          if echo "$CONFIG_RESPONSE" | grep -q "App env: default" && \
+          echo "$CONFIG_RESPONSE" | grep -q "App ver: default"; then
+
+            echo "Initial config check passed!"
+            echo "Revision: $REVISION"
+          else
+            echo "Initial config check failed. Please investigate the container app logs for more details."
+            exit 1
+          fi
+          
+      - name: Add runtime vars
+        shell: bash
+        run: |
+          az containerapp update \
+            --name "${{ inputs.containerapp_name }}" \
+            --resource-group "${{ inputs.resource_group }}" \
+            --set-env-vars "APP_ENV=production" APP_VERSION="${{ inputs.image_tag }}"
+
+      - name: Verify env vars and runtime configuration
+        id: new_revision
+        shell: bash
+        run: |
+
+          NEW_REVISION="$(az containerapp revision list \
+          --name "${{ inputs.containerapp_name }}" \
+          --resource-group "${{ inputs.resource_group }}" \
+          --query "sort_by(@, &properties.createdTime)[-1].name" \
+          -o tsv)"
+
+          echo "revision=$NEW_REVISION" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ steps.first_revision.outputs.revision }}" = "$NEW_REVISION" ]; then
+            echo "Expected a new revision, but revision name did not change."
+            exit 1
+          fi
+
+          for attempt in {1..6}; do
+
+            HEALTH_SUCCESS=false
+            CONFIG_SUCCESS=false
+
+            if curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/health" > /dev/null; then
+              echo "Health check passed after env var update!"
+              HEALTH_SUCCESS=true
+            else
+              echo "Health check failed after env var update."
+            fi
+
+            if CONFIG_RESPONSE="$(curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/config")"; then
+
+              if echo "$CONFIG_RESPONSE" | grep -q "App env: production" && \
+                 echo "$CONFIG_RESPONSE" | grep -q "App ver: ${{ inputs.image_tag }}"; then
+                echo "Runtime config check passed after env var update!"
+                CONFIG_SUCCESS=true
+              else
+                echo "Runtime config check failed after env var update."
+              fi
+            
+            else 
+              echo "Config request failed after env var update."
+            fi
+
+            if [ "$HEALTH_SUCCESS" = true ] && [ "$CONFIG_SUCCESS" = true ]; then
+              break
+            fi
+
+            if [ "$attempt" -lt 6 ]; then
+              echo "Waiting 10 seconds before retrying health/config checks... (Attempt $attempt of 6)"
+              sleep 10
+            else
+              echo "Health/config check failed after env var update. Please investigate the container app logs for more details."
+              echo "Trying to reactivate previous revision to restore service availability while you investigate..."
+
+              az containerapp revision activate \
+                --name "${{ inputs.containerapp_name }}" \
+                --resource-group "${{ inputs.resource_group }}" \
+                --revision "${{ steps.first_revision.outputs.revision }}"
+              
+              ROLLED_BACK_ACTIVE="$(az containerapp revision show \
+              --name "${{ inputs.containerapp_name }}" \
+              --resource-group "${{ inputs.resource_group }}" \
+              --revision "${{ steps.first_revision.outputs.revision }}" \
+              --query "properties.active" \
+              -o tsv)"
+              
+              if [ "$ROLLED_BACK_ACTIVE" = "true" ]; then
+                echo "Successfully reactivated previous revision ${{ steps.first_revision.outputs.revision }} to restore service availability."
+              else
+                echo "Failed to reactivate previous revision. Please investigate the container app logs and manually reactivate the last healthy revision to restore service availability."
+              fi
+
+              exit 1
+            fi
+          
+          done
+
+      - name: Deployment summary
+        run: |
+          {
+          echo "## Deployment summary"
+          echo ""
+          echo "- GitHub Environment: ${{ inputs.deploy_environment }}"
+          echo "- Azure Resource Group: ${{ inputs.resource_group }}"
+          echo "- Container App Environment: ${{ inputs.containerapp_environment }}"
+          echo "- Container App Name: ${{ inputs.containerapp_name }}"
+          echo "- Container app URL: ${{ steps.get_url.outputs.container_app_url }}"
+          echo "- Deployed image: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
+          echo "- Old revision: ${{ steps.first_revision.outputs.revision }}"
+          echo "- New revision: ${{ steps.new_revision.outputs.revision }}"
+          } >> "$GITHUB_STEP_SUMMARY"
