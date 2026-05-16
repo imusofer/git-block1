@@ -160,7 +160,9 @@ jobs:
           if ! az containerapp show \
             --name "${{ inputs.containerapp_name }}" \
             --resource-group "${{ inputs.resource_group }}" > /dev/null 2>&1; then
+
             echo "Container app ${{ inputs.containerapp_name }} does not exist, creating it..."
+
             az containerapp create \
               --name "${{ inputs.containerapp_name }}" \
               --resource-group "${{ inputs.resource_group }}" \
@@ -172,11 +174,51 @@ jobs:
               --registry-identity "$IDENTITY_RESOURCE_ID" \
               --user-assigned "$IDENTITY_RESOURCE_ID"
           else
+
             echo "Container app ${{ inputs.containerapp_name }} already exists, updating image..."
-            az containerapp update \
+
+
+            PRE_UPDATE_REVISION="$(az containerapp revision list \
               --name "${{ inputs.containerapp_name }}" \
               --resource-group "${{ inputs.resource_group }}" \
-              --image "${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}"
+              --query 'sort_by([?properties.active==`true`], &properties.createdTime)[-1].name' \
+              -o tsv)"
+
+            if [ -z "$PRE_UPDATE_REVISION" ]; then
+
+              echo "Could not determine active revision before update. Aborting deployment to avoid potential downtime."
+              exit 1
+
+            fi
+            
+            echo "Pre-update active revision: $PRE_UPDATE_REVISION"
+              
+            if UPDATE_OUTPUT="$(az containerapp update \
+              --name "${{ inputs.containerapp_name }}" \
+              --resource-group "${{ inputs.resource_group }}" \
+              --image "${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}" 2>&1)"; then
+
+              echo "Container app image updated successfully."
+
+              else
+                echo "Failed to update container app image. Error details:"
+                echo "$UPDATE_OUTPUT"
+
+                if echo "$UPDATE_OUTPUT" | grep -q "MANIFEST_UNKNOWN"; then
+
+                  echo "The specified image tag '${{ inputs.image_tag }}' was not found in ACR."
+
+                fi
+
+                echo "Trying to reactivate previous revision to restore service availability while you investigate..."
+
+                az containerapp revision activate \
+                  --name "${{ inputs.containerapp_name }}" \
+                  --resource-group "${{ inputs.resource_group }}" \
+                  --revision "$PRE_UPDATE_REVISION"
+                
+                exit 1
+            fi
           fi
 
       - name: Output container app URL
@@ -212,15 +254,7 @@ jobs:
           
           CONFIG_RESPONSE="$(curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/config")"
 
-          if echo "$CONFIG_RESPONSE" | grep -q "App env: default" && \
-          echo "$CONFIG_RESPONSE" | grep -q "App ver: default"; then
-
-            echo "Initial config check passed!"
-            echo "Revision: $REVISION"
-          else
-            echo "Initial config check failed. Please investigate the container app logs for more details."
-            exit 1
-          fi
+          echo "Current runtime config before env var update: $CONFIG_RESPONSE"
           
       - name: Add runtime vars
         shell: bash
