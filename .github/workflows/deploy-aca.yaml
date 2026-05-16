@@ -192,10 +192,10 @@ jobs:
             fi
             
             echo "Pre-update active revision: $PRE_UPDATE_REVISION"
-              
+            
             if UPDATE_OUTPUT="$(az containerapp update \
               --name "${{ inputs.containerapp_name }}" \
-              --resource-group "${{ inputs.resource_group }}" \
+               --resource-group "${{ inputs.resource_group }}" \
               --image "${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }}" 2>&1)"; then
 
               echo "Container app image updated successfully."
@@ -210,14 +210,26 @@ jobs:
 
                 fi
 
-                echo "Trying to reactivate previous revision to restore service availability while you investigate..."
-
-                az containerapp revision activate \
+                PRE_UPDATE_ACTIVE="$(az containerapp revision show \
                   --name "${{ inputs.containerapp_name }}" \
                   --resource-group "${{ inputs.resource_group }}" \
-                  --revision "$PRE_UPDATE_REVISION"
-                
+                  --revision "$PRE_UPDATE_REVISION" \
+                  --query "properties.active" \
+                  -o tsv)"
+
+                if [ "$PRE_UPDATE_ACTIVE" = "true" ]; then
+                  echo "Previous revision $PRE_UPDATE_REVISION is already active. No rollback needed."
+                else
+                  echo "Previous revision $PRE_UPDATE_REVISION is not active. Attempting to reactivate it to restore service availability..."
+
+                  az containerapp revision activate \
+                    --name "${{ inputs.containerapp_name }}" \
+                    --resource-group "${{ inputs.resource_group }}" \
+                    --revision "$PRE_UPDATE_REVISION"
+                fi
+            
                 exit 1
+              
             fi
           fi
 
