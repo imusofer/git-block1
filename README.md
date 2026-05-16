@@ -27,6 +27,7 @@
 - Build a local security baseline with tracked-template/untracked-real secret handling, restricted env-file permissions, EnvironmentFile-based service wiring, least-privilege systemd execution, trusted-group access boundaries, and documented security notes
 - Deploy the existing Flask workload to a low-cost Azure runtime target with Azure Container Apps, private ACR image pulls through managed identity, runtime env injection, external ingress verification, and clean teardown discipline
 - Build a pipeline-driven Azure Container Apps deployment workflow with GitHub Environments, manual approval gating, Azure OIDC authentication, deployment verification, retry logic, revision-aware validation, rollback activation, and deployment summary reporting
+- Practice cloud deployment break/fix scenarios across Azure Container Apps image tags, runtime config, registry identity behavior, ingress target ports, bounded verification retries, and rollback-aware recovery
 
 ## Contents
 - .gitignore
@@ -415,6 +416,25 @@
 - Reactivate the previous Azure Container Apps revision on failed post-update verification
 - Verify rollback activation by checking the old revision's `properties.active` state
 - Expose the final deployment URL through the GitHub Environment deployment view
+- Diagnose Azure Container Apps deployment failure caused by a missing ACR image tag
+- Identify `MANIFEST_UNKNOWN` as an ACR tag-not-found failure during `az containerapp update`
+- Add ACR image tag preflight validation with `az acr repository show-tags`
+- Fail early before Azure runtime mutation when the requested ACR image tag does not exist
+- Capture Azure CLI update errors with `2>&1`
+- Classify known deployment failures from captured Azure CLI output
+- Capture a pre-update active Azure Container Apps revision before attempting risky deployment changes
+- Make image-update rollback handling idempotent by checking whether the previous revision is already active
+- Treat Azure Container Apps revision changes as diagnostic evidence instead of hard deployment truth
+- Use `/health` and `/config` as the final functional truth for deployment validation
+- Simulate bad runtime config with incorrect `APP_ENV`
+- Prove that bad runtime config can pass health checks but fail functional config validation
+- Reactivate the previous Azure Container Apps revision after failed runtime config verification
+- Investigate managed identity and `AcrPull` behavior during private ACR pull testing
+- Restore normal `AcrPull` validation with a count-based `az role assignment list` query
+- Diagnose ingress target-port mismatch where the container runs but external HTTP traffic times out
+- Prove ingress mismatch with `az containerapp show --query "properties.configuration.ingress.targetPort"`
+- Bound deployment HTTP verification with `curl --max-time 10`
+- Clean up disposable break/fix Azure Container Apps and managed identities without touching persistent ACR baseline resources
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -487,5 +507,21 @@
 - Verified the workflow includes rollback-aware failure handling by reactivating the previous revision if post-update verification exhausts its retry budget
 - Verified successful production deployment at `https://ca-block25.livelywater-3c4a6352.northeurope.azurecontainerapps.io`
 
+## Break/Fix Block 4 Verification
+- Verified a bad image tag fails during Azure Container Apps image update with `MANIFEST_UNKNOWN`
+- Verified the workflow now catches missing ACR image tags before deployment mutation with an ACR preflight check
+- Verified failed image-update handling captures Azure CLI error output and preserves the previous active revision
+- Verified rollback handling does not fail when the previous revision is already active
+- Verified bad runtime config causes `/health` to pass while `/config` fails strict validation
+- Verified bounded retry logic retries post-update health/config checks before declaring failure
+- Verified rollback activation restores the previous Azure Container Apps revision after failed runtime config validation
+- Verified restored runtime config succeeds after propagation delay through the retry loop
+- Verified a controlled missing-`AcrPull` test showed Azure/ACA could still result in the disposable identity receiving `AcrPull`
+- Verified normal `AcrPull` validation was restored with a count-based role assignment check
+- Verified a bad ingress `target_port` causes external `/health` timeout while the container remains running
+- Verified app logs showed Flask listening on port `5000` while ACA ingress targeted port `6000`
+- Verified deployment verification now uses bounded `curl --max-time 10` checks
+- Verified disposable test resources were cleaned up without deleting `ca-block25`, `id-block25-acrpull`, `acrazblock1`, or `rg-block16`
+
 ## Next Automation Step
-- Break/Fix Block 4: practice cloud deployment failure and rollback scenarios across Azure Container Apps image, runtime config, revision, identity, and verification paths
+- Terraform Block 3: refactor infrastructure into cleaner reusable modules and improve state/workspace discipline
