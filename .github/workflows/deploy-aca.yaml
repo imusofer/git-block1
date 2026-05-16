@@ -288,7 +288,7 @@ jobs:
           az containerapp update \
             --name "${{ inputs.containerapp_name }}" \
             --resource-group "${{ inputs.resource_group }}" \
-            --set-env-vars "APP_ENV=broken-block26-v3" APP_VERSION="${{ inputs.image_tag }}"
+            --set-env-vars "APP_ENV=production" APP_VERSION="${{ inputs.image_tag }}"
 
       - name: Verify env vars and runtime configuration
         id: new_revision
