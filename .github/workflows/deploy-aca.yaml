@@ -150,43 +150,25 @@ jobs:
             --query "id" \
             -o tsv)"
           
-          if [ "${{ inputs.managed_identity_name }}" = "id-block26-no-acrpull" ]; then
-            echo "Skipping role assignment for ${{ inputs.managed_identity_name }} to simulate missing permissions scenario."
+          ACR_PULL_ASSIGNMENT_COUNT="$(az role assignment list \
+            --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
+            --scope "$ACR_SCOPE" \
+            --query "[?roleDefinitionName=='AcrPull'] | length(@)" \
+            -o tsv)"
 
-            ACR_PULL_ASSIGNMENT_COUNT="$(az role assignment list \
+          if [ "$ACR_PULL_ASSIGNMENT_COUNT" = "0" ]; then
+            echo "Assigning AcrPull role to managed identity ${{ inputs.managed_identity_name }} for ACR $ACR_NAME..."
+
+            az role assignment create \
               --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
-              --scope "$ACR_SCOPE" \
-              --query "[?roleDefinitionName=='AcrPull'] | length(@)" \
-              -o tsv)"
+              --assignee-principal-type "ServicePrincipal" \
+              --role "AcrPull" \
+              --scope "$ACR_SCOPE"
 
-            if [ "$ACR_PULL_ASSIGNMENT_COUNT" != "0" ]; then
-                echo "Managed identity ${{ inputs.managed_identity_name }} unexpectedly has AcrPull role for ACR $ACR_NAME."
-                exit 1
-            fi
+          else
 
-            else
+            echo "Managed identity ${{ inputs.managed_identity_name }} already has AcrPull role for ACR $ACR_NAME at scope $ACR_SCOPE."
 
-              az role assignment list \
-                --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
-                --scope "$ACR_SCOPE" \
-                --query "[?roleDefinitionName=='AcrPull'].{Role:roleDefinitionName, Scope:scope}" \
-                -o json
-
-              if ! az role assignment list \
-                --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
-                --scope "$ACR_SCOPE" \
-                --query "[?roleDefinitionName=='AcrPull']" \
-                -o json | grep -q 'AcrPull'; then
-                  echo "Assigning AcrPull role to managed identity ${{ inputs.managed_identity_name }} for ACR $ACR_NAME..."
-                    az role assignment create \
-                      --assignee-object-id "$IDENTITY_PRINCIPAL_ID" \
-                      --assignee-principal-type "ServicePrincipal" \
-                      --role "AcrPull" \
-                      --scope "$ACR_SCOPE"
-              else
-
-                  echo "Managed identity ${{ inputs.managed_identity_name }} already has AcrPull role for ACR $ACR_NAME."
-              fi
           fi
 
           if ! az containerapp show \
@@ -205,6 +187,7 @@ jobs:
               --registry-server "$ACR_LOGIN_SERVER" \
               --registry-identity "$IDENTITY_RESOURCE_ID" \
               --user-assigned "$IDENTITY_RESOURCE_ID"
+
           else
 
             echo "Container app ${{ inputs.containerapp_name }} already exists, updating image..."
