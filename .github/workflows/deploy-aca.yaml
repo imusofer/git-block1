@@ -272,14 +272,14 @@ jobs:
 
           echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
 
-          if curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/health" > /dev/null; then
+          if curl --fail --silent --show-error --max-time 10 "${{ steps.get_url.outputs.container_app_url }}/health" > /dev/null; then
             echo "Initial health check passed!"
           else
             echo "Initial health check failed. Please investigate the container app logs for more details."
             exit 1
           fi
           
-          CONFIG_RESPONSE="$(curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/config")"
+          CONFIG_RESPONSE="$(curl --fail --silent --show-error --max-time 10 "${{ steps.get_url.outputs.container_app_url }}/config")"
 
           echo "Current runtime config before env var update: $CONFIG_RESPONSE"
           
@@ -317,14 +317,14 @@ jobs:
             HEALTH_SUCCESS=false
             CONFIG_SUCCESS=false
 
-            if curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/health" > /dev/null; then
+            if curl --fail --silent --show-error --max-time 10 "${{ steps.get_url.outputs.container_app_url }}/health" > /dev/null; then
               echo "Health check passed after env var update!"
               HEALTH_SUCCESS=true
             else
               echo "Health check failed after env var update."
             fi
 
-            if CONFIG_RESPONSE="$(curl --fail --silent --show-error "${{ steps.get_url.outputs.container_app_url }}/config")"; then
+            if CONFIG_RESPONSE="$(curl --fail --silent --show-error --max-time 10 "${{ steps.get_url.outputs.container_app_url }}/config")"; then
 
               if echo "$CONFIG_RESPONSE" | grep -q "App env: production" && \
                  echo "$CONFIG_RESPONSE" | grep -q "App ver: ${{ inputs.image_tag }}"; then
