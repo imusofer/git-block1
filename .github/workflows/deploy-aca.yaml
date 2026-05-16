@@ -84,6 +84,20 @@ jobs:
           az account show
           az acr login --name "$ACR_NAME"
 
+      - name: Verify image exists in ACR
+        shell: bash
+        run: |
+          if az acr repository show-tags \
+            --name "$ACR_NAME" \
+            --repository "$IMAGE_NAME" \
+            --query "contains(@, '${{ inputs.image_tag }}')" \
+            -o tsv | grep -qx true; then
+            echo "Image ${{ env.IMAGE_NAME }}:${{ inputs.image_tag }} found in ACR $ACR_NAME."
+          else
+            echo "Image ${{ env.IMAGE_NAME }}:${{ inputs.image_tag }} does not exist in ACR $ACR_NAME."
+            exit 1
+          fi
+        
       - name: Verify Azure resources exist
         shell: bash
         run: |
