@@ -40,23 +40,12 @@ module "network" {
   subnet_address_prefixes = var.subnet_address_prefixes
 }
 
-resource "azurerm_network_security_group" "main" {
-  name                = "block19-nsg"
+module "network_security" {
+  source = "./modules/network-security"
+
+  name                = var.network_security_group_name
   location            = var.location
   resource_group_name = module.resource_group.name
-
-  security_rule {
-    name                       = "Allow-SSH"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
 }
 
 resource "azurerm_public_ip" "main" {
@@ -80,7 +69,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_network_interface_security_group_association" "main" {
-  network_security_group_id = azurerm_network_security_group.main.id
+  network_security_group_id = module.network_security.nsg_id
   network_interface_id      = azurerm_network_interface.main.id
 }
 
@@ -124,7 +113,7 @@ output "tf_block2_vnet" {
 
 output "tf_block2_nsg" {
   description = "The name of the NSG"
-  value       = azurerm_network_security_group.main.name
+  value       = module.network_security.nsg_name
 }
 
 output "tf_block2_subnet" {
