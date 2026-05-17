@@ -29,18 +29,15 @@ module "resource_group" {
   location = var.location
 }
 
-resource "azurerm_virtual_network" "main" {
-  name                = "block19-network"
-  address_space       = ["10.0.0.0/16"]
-  location            = var.location
-  resource_group_name = module.resource_group.name
-}
+module "network" {
+  source = "./modules/network"
 
-resource "azurerm_subnet" "main" {
-  name                 = "block19-subnet"
-  resource_group_name  = module.resource_group.name
-  virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.1.0/24"]
+  name                    = var.virtual_network_name
+  address_space           = var.address_space
+  location                = var.location
+  resource_group_name     = module.resource_group.name
+  subnet_name             = var.subnet_name
+  subnet_address_prefixes = var.subnet_address_prefixes
 }
 
 resource "azurerm_network_security_group" "main" {
@@ -76,7 +73,7 @@ resource "azurerm_network_interface" "main" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.main.id
+    subnet_id                     = module.network.subnet_id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.main.id
   }
@@ -122,7 +119,7 @@ output "tf_block2_rg" {
 
 output "tf_block2_vnet" {
   description = "The name of the VNet"
-  value       = azurerm_virtual_network.main.name
+  value       = module.network.vnet_name
 }
 
 output "tf_block2_nsg" {
@@ -132,7 +129,7 @@ output "tf_block2_nsg" {
 
 output "tf_block2_subnet" {
   description = "The name of the Subnet"
-  value       = azurerm_subnet.main.name
+  value       = module.network.subnet_name
 }
 
 output "tf_block2_nic" {
