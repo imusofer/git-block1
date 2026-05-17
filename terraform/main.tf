@@ -22,7 +22,9 @@ variable "resource_group_name" {
   type        = string
 }
 
-resource "azurerm_resource_group" "main" {
+module "resource_group" {
+  source = "./modules/resource-group"
+
   name     = var.resource_group_name
   location = var.location
 }
@@ -31,12 +33,12 @@ resource "azurerm_virtual_network" "main" {
   name                = "block19-network"
   address_space       = ["10.0.0.0/16"]
   location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = module.resource_group.name
 }
 
 resource "azurerm_subnet" "main" {
   name                 = "block19-subnet"
-  resource_group_name  = azurerm_resource_group.main.name
+  resource_group_name  = module.resource_group.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.1.0/24"]
 }
@@ -44,7 +46,7 @@ resource "azurerm_subnet" "main" {
 resource "azurerm_network_security_group" "main" {
   name                = "block19-nsg"
   location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = module.resource_group.name
 
   security_rule {
     name                       = "Allow-SSH"
@@ -62,7 +64,7 @@ resource "azurerm_network_security_group" "main" {
 
 resource "azurerm_public_ip" "main" {
   name                = "block19-pip"
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = module.resource_group.name
   location            = var.location
   allocation_method   = "Static"
 }
@@ -70,7 +72,7 @@ resource "azurerm_public_ip" "main" {
 resource "azurerm_network_interface" "main" {
   name                = "block19-nic"
   location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = module.resource_group.name
 
   ip_configuration {
     name                          = "internal"
@@ -87,7 +89,7 @@ resource "azurerm_network_interface_security_group_association" "main" {
 
 resource "azurerm_linux_virtual_machine" "main" {
   name                = "block19-vm"
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = module.resource_group.name
   location            = var.location
   size                = "Standard_B2als_v2"
   admin_username      = "adminuser"
@@ -115,7 +117,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 
 output "tf_block2_rg" {
   description = "The name of the Azure resource group"
-  value       = azurerm_resource_group.main.name
+  value       = module.resource_group.name
 }
 
 output "tf_block2_vnet" {
