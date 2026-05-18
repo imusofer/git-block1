@@ -28,6 +28,7 @@
 - Deploy the existing Flask workload to a low-cost Azure runtime target with Azure Container Apps, private ACR image pulls through managed identity, runtime env injection, external ingress verification, and clean teardown discipline
 - Build a pipeline-driven Azure Container Apps deployment workflow with GitHub Environments, manual approval gating, Azure OIDC authentication, deployment verification, retry logic, revision-aware validation, rollback activation, and deployment summary reporting
 - Practice cloud deployment break/fix scenarios across Azure Container Apps image tags, runtime config, registry identity behavior, ingress target ports, bounded verification retries, and rollback-aware recovery
+- Refactor a flat Terraform Azure VM stack into reusable modules for resource group, network, network security, and Linux VM compute boundaries while preserving infrastructure behavior and practicing workspace/state discipline
 
 ## Contents
 - .gitignore
@@ -42,9 +43,6 @@
 - Dockerfile
 - data/statuses.txt
 - .dockerignore
-- k8s/py-block2-deployment.yaml
-- k8s/py-block2-job.yaml
-- k8s/py-block2-cronjob.yaml
 - app/py-block3.py
 - app/Dockerfile
 - app/requirements.txt
@@ -65,6 +63,23 @@
 - helm/py-block3/templates/ingress.yaml
 - terraform/main.tf
 - terraform/.terraform.lock.hcl
+- terraform/main.tf
+- terraform/providers.tf
+- terraform/variables.tf
+- terraform/outputs.tf
+- terraform/.terraform.lock.hcl
+- terraform/modules/resource-group/main.tf
+- terraform/modules/resource-group/variables.tf
+- terraform/modules/resource-group/outputs.tf
+- terraform/modules/network/main.tf
+- terraform/modules/network/variables.tf
+- terraform/modules/network/outputs.tf
+- terraform/modules/network-security/main.tf
+- terraform/modules/network-security/variables.tf
+- terraform/modules/network-security/outputs.tf
+- terraform/modules/linux-vm/main.tf
+- terraform/modules/linux-vm/variables.tf
+- terraform/modules/linux-vm/outputs.tf
 - ansible/inventory.ini
 - ansible/local-check.yaml
 - ansible/local-create.yaml
@@ -435,6 +450,26 @@
 - Prove ingress mismatch with `az containerapp show --query "properties.configuration.ingress.targetPort"`
 - Bound deployment HTTP verification with `curl --max-time 10`
 - Clean up disposable break/fix Azure Container Apps and managed identities without touching persistent ACR baseline resources
+- Refactor a flat Terraform root module into reusable child modules
+- Distinguish root module responsibilities from child module responsibilities
+- Use the root module as an orchestrator for reusable infrastructure modules
+- Pass root values and module outputs into child module inputs
+- Expose child module resource attributes through module outputs
+- Replace direct root resource references with `module.<module-name>.<output-name>` references
+- Preserve infrastructure identity while changing Terraform code structure
+- Extract a Resource Group into a dedicated Terraform module
+- Extract VNet and subnet resources into a network module
+- Extract an NSG and inline SSH security rule into a network-security module
+- Extract Public IP, NIC, NIC/NSG association, and Linux VM resources into a linux-vm module
+- Distinguish same-module direct resource references from cross-module output references
+- Keep nested Terraform resource blocks hardcoded when generic abstraction is not yet needed
+- Split root Terraform configuration into `main.tf`, `providers.tf`, `variables.tf`, and `outputs.tf`
+- Validate module refactors with `terraform fmt -recursive`, `terraform validate`, and `terraform plan`
+- Confirm module resource addresses in Terraform plans
+- Practice Terraform workspace inspection with `terraform workspace show` and `terraform workspace list`
+- Create, inspect, switch away from, and delete a temporary Terraform workspace
+- Confirm workspace-isolated empty state behavior before any apply
+- Avoid Terraform apply during structural refactor verification
 
 ## Repo Check Verification
 - Verified the repository can be checked out in GitHub Actions
@@ -524,4 +559,4 @@
 - Verified disposable test resources were cleaned up without deleting `ca-block25`, `id-block25-acrpull`, `acrazblock1`, or `rg-block16`
 
 ## Next Automation Step
-- Terraform Block 3: refactor infrastructure into cleaner reusable modules and improve state/workspace discipline
+- Observability Block 2: build Azure-side observability with Log Analytics, Azure Monitor basics, dashboarding, and alerting for cloud-deployed workloads
