@@ -12,16 +12,6 @@ provider "azurerm" {
   subscription_id = "7a91bdee-30d4-4fc8-8bb2-2252cfd4e34a"
 }
 
-variable "location" {
-  description = "Azure region for the resource group"
-  type        = string
-}
-
-variable "resource_group_name" {
-  description = "Azure resource group name"
-  type        = string
-}
-
 module "resource_group" {
   source = "./modules/resource-group"
 
@@ -48,57 +38,20 @@ module "network_security" {
   resource_group_name = module.resource_group.name
 }
 
-resource "azurerm_public_ip" "main" {
-  name                = "block19-pip"
-  resource_group_name = module.resource_group.name
-  location            = var.location
-  allocation_method   = "Static"
-}
+module "linux_vm" {
+  source = "./modules/linux-vm"
 
-resource "azurerm_network_interface" "main" {
-  name                = "block19-nic"
-  location            = var.location
-  resource_group_name = module.resource_group.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = module.network.subnet_id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.main.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "main" {
+  resource_group_name       = module.resource_group.name
+  location                  = var.location
+  subnet_id                 = module.network.subnet_id
   network_security_group_id = module.network_security.nsg_id
-  network_interface_id      = azurerm_network_interface.main.id
-}
 
-resource "azurerm_linux_virtual_machine" "main" {
-  name                = "block19-vm"
-  resource_group_name = module.resource_group.name
-  location            = var.location
-  size                = "Standard_B2als_v2"
-  admin_username      = "adminuser"
-  network_interface_ids = [
-    azurerm_network_interface.main.id
-  ]
-
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("/home/imusofer/.ssh/id_ed25519.pub")
-  }
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Debian"
-    offer     = "debian-11"
-    sku       = "11-backports-gen2"
-    version   = "latest"
-  }
+  public_ip_name         = var.public_ip_name
+  network_interface_name = var.network_interface_name
+  vm_name                = var.vm_name
+  vm_size                = var.vm_size
+  admin_username         = var.admin_username
+  ssh_public_key         = file("/home/imusofer/.ssh/id_ed25519.pub")
 }
 
 output "tf_block2_rg" {
@@ -123,15 +76,15 @@ output "tf_block2_subnet" {
 
 output "tf_block2_nic" {
   description = "The name of the NIC"
-  value       = azurerm_network_interface.main.name
+  value       = module.linux_vm.network_interface_name
 }
 
 output "tf_block2_vm" {
   description = "The name of the Linux VM"
-  value       = azurerm_linux_virtual_machine.main.name
+  value       = module.linux_vm.vm_name
 }
 
 output "tf_block2_pip" {
   description = "Public IP Address value"
-  value       = azurerm_public_ip.main.ip_address
+  value       = module.linux_vm.public_ip_address
 }
