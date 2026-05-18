@@ -541,22 +541,14 @@
 - Verified the workflow writes a final deployment summary to `GITHUB_STEP_SUMMARY`
 - Verified the workflow includes rollback-aware failure handling by reactivating the previous revision if post-update verification exhausts its retry budget
 - Verified successful production deployment at `https://ca-block25.livelywater-3c4a6352.northeurope.azurecontainerapps.io`
-
-## Break/Fix Block 4 Verification
 - Verified a bad image tag fails during Azure Container Apps image update with `MANIFEST_UNKNOWN`
-- Verified the workflow now catches missing ACR image tags before deployment mutation with an ACR preflight check
+- Verified the workflow catches missing ACR image tags before deployment mutation with an ACR preflight check
 - Verified failed image-update handling captures Azure CLI error output and preserves the previous active revision
 - Verified rollback handling does not fail when the previous revision is already active
-- Verified bad runtime config causes `/health` to pass while `/config` fails strict validation
-- Verified bounded retry logic retries post-update health/config checks before declaring failure
+- Verified bad runtime config can pass `/health` while failing strict `/config` validation
 - Verified rollback activation restores the previous Azure Container Apps revision after failed runtime config validation
-- Verified restored runtime config succeeds after propagation delay through the retry loop
-- Verified a controlled missing-`AcrPull` test showed Azure/ACA could still result in the disposable identity receiving `AcrPull`
-- Verified normal `AcrPull` validation was restored with a count-based role assignment check
-- Verified a bad ingress `target_port` causes external `/health` timeout while the container remains running
-- Verified app logs showed Flask listening on port `5000` while ACA ingress targeted port `6000`
-- Verified deployment verification now uses bounded `curl --max-time 10` checks
-- Verified disposable test resources were cleaned up without deleting `ca-block25`, `id-block25-acrpull`, `acrazblock1`, or `rg-block16`
+- Verified deployment verification uses bounded `curl --max-time 10` checks
+- Verified ingress target-port mismatch causes external `/health` timeout while the container remains running
 
 ## Next Automation Step
 - Observability Block 2: build Azure-side observability with Log Analytics, Azure Monitor basics, dashboarding, and alerting for cloud-deployed workloads
